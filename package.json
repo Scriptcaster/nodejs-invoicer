@@ -9,9 +9,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "blob-stream": "^0.1.3",
     "body-parser": "*",
     "ejs": "*",
     "express": "*",
-    "mongoose": "*"
+    "mongoose": "*",
+    "pdfkit": "^0.10.0"
   }
 }

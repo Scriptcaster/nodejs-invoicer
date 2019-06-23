@@ -17,7 +17,12 @@ h1 {
   border-radius: 5px;
   box-shadow: 5px 5px 15px -5px rgba(0, 0, 0, 0.3);
 }
-
+.container {
+  display: block;
+}
+.container .buttton {
+  display: block;
+}
 #heading {
   background-color: #A683E3;
   text-align: center;
@@ -28,6 +33,12 @@ h1 {
   display: flex;
   align-items: center;
   border-bottom: 1px solid #F1F1F1;
+}
+.form-item {
+  display: block;
+}
+.form-item input {
+  display: block;
 }
 
 .item:last-child {
@@ -57,11 +68,12 @@ form.item {
 }
 
 button {
+  display: block;
   min-height: 50px;
   width: 50px;
   border-radius: 50%;
   border-color: transparent;
-  background-color: #A683E3;
+  background-color: pink;
   color: #fff;
   font-size: 30px;
   padding-bottom: 6px;

@@ -1,0 +1,19 @@
+<%- include("header") -%>
+
+<div class="box" id="heading">
+  <h1>Home</h1>
+</div>
+
+<div class="box">
+  <% dbItems.forEach(function(dbItems){ %>
+    <a href="/<%=  dbItems.number  %>" target="blank">
+      <div class="item">   
+        <p><%=  dbItems.number  %></p>
+      </div>
+    </a>
+    </form>
+  <% }); %>
+      <a href="/new" target="_blank">New Item</a>
+</div>
+
+<%- include("footer") -%>
