@@ -13,7 +13,9 @@
     "body-parser": "*",
     "ejs": "*",
     "express": "*",
+    "fs": "0.0.1-security",
     "mongoose": "*",
-    "pdfkit": "^0.10.0"
+    "pdfkit": "^0.10.0",
+    "pdfmake": "^0.1.57"
   }
 }

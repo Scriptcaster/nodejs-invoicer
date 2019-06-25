@@ -5,14 +5,15 @@
 </div>
 
 <div class="box">
+  <form class="form-item" action="/" method="post">
   <% dbItems.forEach(function(dbItems){ %>
     <a href="/<%=  dbItems.number  %>" target="blank">
       <div class="item">   
         <p><%=  dbItems.number  %></p>
       </div>
     </a>
-    </form>
   <% }); %>
+  </form>
       <a href="/new" target="_blank">New Item</a>
 </div>
 
