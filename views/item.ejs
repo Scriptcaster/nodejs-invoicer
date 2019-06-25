@@ -1,7 +1,7 @@
 <%- include("header") -%>
 <h1>Item</h1>
 <div class="box" id="heading">
-  <h1><%= item.number %></h1>
+  <h1><%= Document %></h1>
 </div>
 
 <div class="box">
@@ -9,14 +9,32 @@
   
     <div class="container">
       
-      <input type="text" value="<%= item.number %>" name="newNumber" placeholder="Number">
-      <input type="text" value="<%= item.date %>" name="newDate" placeholder="Date">
+      <input id="number" type="text" value="<% if (item) { %><%= item.number%><% } %>" name="itemNumber" placeholder="Number">
+      <input id="date" type="text" value="<% if (item) { %><%= item.date%><% } %>" name="itemDate" placeholder="Date">
   
     </div>
 
-     <a href="/" target="_blank">Back</a>
-     <a href="<%= item.number %>.pdf" target="_blank">Generate</a>
+     <button type="submit" name="item">Save</button>
+     <button onClick = "what();">Generate</button>
+     <br>
+  </form>
+  <form action="/delete" method="post">
+    <button type="submit" name="id" value="<% if (item) { %><%= item._id%><% } %>">Remove</button>
   </form>
       </div>
+
+
+     <script type="text/javascript">
+     		function what(){
+     			var docDefinition = {
+	 	        content: [
+	 	          document.getElementById("number").value,
+	 	          document.getElementById("date").value
+	 	         ]
+	 	       };
+	 	       pdfMake.createPdf(docDefinition).open();
+     		}
+     </script>
+
 
 <%- include("footer") -%>

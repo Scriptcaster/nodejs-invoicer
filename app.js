@@ -12,21 +12,6 @@ const itemSchema = { number: String, date: String };
 const Item = mongoose.model("Item", itemSchema);
 
 
-// Define font files
-var fonts = {
-  Roboto: {
-    normal: 'fonts/Roboto-Regular.ttf',
-    bold: 'fonts/Roboto-Medium.ttf',
-    italics: 'fonts/Roboto-Italic.ttf',
-    bolditalics: 'fonts/Roboto-MediumItalic.ttf'
-  }
-};
-
-var PdfPrinter = require('pdfmake/src/printer');
-var printer = new PdfPrinter(fonts);
-var fs = require('fs');
-var options = {}
-
 app.get("/", function(req, res) {
   Item.find({}, function(err, dbItems){ 
     res.render("home", {dbItems: dbItems});
@@ -34,31 +19,45 @@ app.get("/", function(req, res) {
 });
 
 app.get("/:itemNumber", function(req, res) {
-  Item.findOne({number: req.params.itemNumber}, function(err, foundItem){
-   var docDefinition = {
-     content: [
-       foundItem.number,
-       foundItem.date
-      ]
-    };
-    var createFile = function() {
-      var pdfDoc = printer.createPdfKitDocument(docDefinition, options);
-        pdfDoc.pipe(fs.createWriteStream("public/" + foundItem.number + ".pdf")).on("finish", function(){
-        console.log("File Created");
-      });
-      pdfDoc.end();
+  const selectedNumber = req.params.itemNumber;
+  var doc = String;
+  Item.findOne({number: selectedNumber}, function(err, foundItem){
+    if (foundItem){
+       doc = selectedNumber;
+    } else {
+     doc = "New Document";
     }
-    res.render("item", {item: foundItem, createPDF: createFile});
+    res.render("item", {item: foundItem, Document: doc});
   });
 });
 
 app.post("/", function(req, res){
-  const item = new Item({
-    number: req.body.newNumber,
-    date: req.body.newDate,
-  });
-  item.save();
+   const selectedNumber = req.body.itemNumber;
+   console.log(selectedNumber);
+   Item.findOne({number: selectedNumber}, function(err, foundItem){
+    if (foundItem) {
+      // foundItem.replaceOne({number: selectedNumber}, function(err, foundItem){
+        console.log("replaced");
+      // });
+    } else {
+      console.log("create new");
+      const item = new Item({
+        number: req.body.itemNumber,
+        date: req.body.itemDate,
+      });
+      if (selectedNumber) {
+        item.save();
+      }
+    }
+   });
   res.redirect("/");
+});
+
+app.post("/delete", function(req, res) {
+  const checkedItemId = req.body.id;
+  Item.findByIdAndRemove(checkedItemId, function(err){
+    if (err) { console.log(err); } else { console.log("removed"); res.redirect("/"); }
+  });
 });
 
 app.listen(3000, function() { console.log("Server started on port 3000"); });
