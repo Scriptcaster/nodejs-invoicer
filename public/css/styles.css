@@ -21,4 +21,8 @@ body {
   padding: 15px;
   margin: auto;
 }
+.btn-success{
+  color: white !important;
+  cursor: pointer;
+}
 
