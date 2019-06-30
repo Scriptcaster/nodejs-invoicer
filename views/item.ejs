@@ -5,7 +5,7 @@
 		<div class="box" id="heading">
 			<h1 class="h3 mb-3 font-weight-normal"><%= Document %></h1>
 		</div>
-		<input id="number" class="form-control" type="text" value="<% if (item) { %><%= item.number%><% } else if (Numberr[0]) { %><%= new Date().getFullYear().toString().substr(-2) + '-00' + (parseInt(Numberr[0].number.substr(-2)) + 1) %><% } else { %><%= '19-0001' %> <% } %>" name="itemNumber" placeholder="Number">
+		<input id="number" class="form-control" type="text" value="<% if (item) { %><%= item.number%><% } else if (Numberr[0]) { %><%= new Date().getFullYear().toString().substr(-2) %><% if (parseInt(Numberr[0].number.substr(-2)) > 8) {%><%= '-00' %><% } else {%><%= '-000' %><% } %><%= (parseInt(Numberr[0].number.substr(-2)) + 1) %><% } else { %><%= '19-0001' %> <% } %>" name="itemNumber" placeholder="Number">
 		<input id="date" class="form-control" type="text" value="<% if (item) { %><%= item.date%><% } else { %><%= new Date().getMonth()+1+'/'+new Date().getDate()+'/'+ new Date().getFullYear() %><% }%>" name="itemDate" placeholder="Date">
 		<div class="button-box">
 			<button class="btn btn-lg btn-primary btn-lg btn-block" type="submit" name="item">Save</button>

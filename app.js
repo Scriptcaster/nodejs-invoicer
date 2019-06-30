@@ -25,7 +25,9 @@ app.get("/:itemNumber", function(req, res) {
   Item.find(function(err, lastItem){
     lastNumber = lastItem;
   }).limit(1).sort({$natural:-1});
+  console.log(selectedNumber);
   Item.findOne({number: selectedNumber}, function(err, foundItem){
+    console.log(foundItem);
     if (foundItem){
        doc = selectedNumber;
     } else {
