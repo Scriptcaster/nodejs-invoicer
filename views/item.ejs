@@ -1,19 +1,17 @@
 <%- include("header") -%>
 <div class="box">
 	<form class="form-signin" action="/" method="post">
-		<img class="mb-4" src="/img/logo.png" alt="">
+		<a href="/"><img class="mb-4" src="/img/logo.png" alt=""></a>
 		<div class="box" id="heading">
 			<h1 class="h3 mb-3 font-weight-normal"><%= Document %></h1>
 		</div>
-		<input id="number" class="form-control" type="text" value="<% if (item) { %><%= item.number%><% } %>" name="itemNumber" placeholder="Number">
-		<input id="date" class="form-control" type="text" value="<% if (item) { %><%= item.date%><% } %>" name="itemDate" placeholder="Date">
-		
+		<input id="number" class="form-control" type="text" value="<% if (item) { %><%= item.number%><% } else if (Numberr[0]) { %><%= new Date().getFullYear().toString().substr(-2) + '-00' + (parseInt(Numberr[0].number.substr(-2)) + 1) %><% } else { %><%= '19-0001' %> <% } %>" name="itemNumber" placeholder="Number">
+		<input id="date" class="form-control" type="text" value="<% if (item) { %><%= item.date%><% } else { %><%= new Date().getMonth()+1+'/'+new Date().getDate()+'/'+ new Date().getFullYear() %><% }%>" name="itemDate" placeholder="Date">
 		<div class="button-box">
 			<button class="btn btn-lg btn-primary btn-lg btn-block" type="submit" name="item">Save</button>
 			<a class="btn btn-success btn-lg btn-block" onClick = "generatePdf();">Generate PDF</a>
 		</div>
 	</form>
-
 	<div class="form-group">
 		<div class="btn-group" data-toggle="buttons" class="col-lg-3 col-lg-offset-10">
 	    <label class="btn btn-default **active**">
@@ -24,13 +22,11 @@
 	    <input type="radio" name="inputWalls" class="doc" value="Contract">  Contract</label>
 	  </div>
 	</div>
-
 	<form action="/delete" method="post">
 		<div class="button-box">
 			<button class="btn btn-link" type="submit" name="id" value="<% if (item) { %><%= item._id%><% } %>">Remove</button>
 		</div>
 	</form>
-
 </div>
 <script type="text/javascript">
 
@@ -45,143 +41,105 @@ for(var i = 0; i < docs.length; i++){
 
 function generatePdf(){
 if (docType === "Estimate") {
-
 	var docDefinition = {
-	content: [{text: 'Estimate', style: 'type'}, {<%- include("logo") -%>},
-	{ style: 'header', stack: [{ style: 'date', table: { body: [
-				[{text: 'Date', fillColor: '#dddddd'}, {text: 'Estimate #', fillColor: '#dddddd'}],
+	content: [{<%- include("logo") -%>, margin: [0, 50, 0, 0]}, {text: 'Estimate', bold: true, margin: [390, -60, 0, 0], alignment: 'center', fontSize: 24},
+	{ bold: true, alignment: 'right', margin: [395, 0, 0, -80], stack: [{alignment: 'center', table: { body: [
+				[{text: 'Date', style: 'tableHeader'}, {text: 'Estimate #', style: 'tableHeader'}],
 				[document.getElementById("date").value, document.getElementById("number").value]
 	]}}]},
-	{ style: 'customer', stack: [{ style: 'table2', table: { widths: ['*', '*'], body: [
-		[{text: 'SERVICE PROVIDER', sytle: 'title', fillColor: '#dddddd'}, {text: 'CUSTOMER', fillColor: '#dddddd'}],
-		[ {type: 'none', ul: [
-				'Jecche Steel • Glass • Aluminum LLC',
-				'829 Broadway Avenue',
-				'Newark, NJ 07104',
-				'Phone: (862) 234-1559 Cell: (973) 368-3248',
-				'Email: jecchellc@yahoo.com',
-				'Web: www.jecche.com'
-				]}, {type: 'none', ul: [
-				'Jecche Steel • Glass • Aluminum LLC',
-				'829 Broadway Avenue',
-				'Newark, NJ 07104',
-				'Phone: (862) 234-1559 Cell: (973) 368-3248',
-				'Email: jecchellc@yahoo.com',
-				'Web: www.jecche.com'
+	{ alignment: 'center', margin: [0, 100, 0, 0], stack: [{ table: { widths: ['*', '*'], body: [
+		[{text: 'SERVICE PROVIDER', style: 'tableHeader'}, {text: 'CUSTOMER', style: 'tableHeader'}],
+		[ {type: 'none', style: 'tableBody', ul: [
+			'Jecche Steel • Glass • Aluminum LLC',
+			'829 Broadway Avenue',
+			'Newark, NJ 07104',
+			'Phone: (862) 234-1559 Cell: (973) 368-3248',
+			'Email: jecchellc@yahoo.com',
+			'Web: www.jecche.com'
+			]}, {type: 'none',  style: 'tableBody', ul: [
+			'Jecche Steel • Glass • Aluminum LLC',
+			'829 Broadway Avenue',
+			'Newark, NJ 07104',
+			'Phone: (862) 234-1559 Cell: (973) 368-3248',
+			'Email: jecchellc@yahoo.com',
+			'Web: www.jecche.com'
 		]}]]}}]},
-	{style: 'tableServices', table: { widths: ['*', '*', '*', '*'], body: [
-		[{text: 'SUMMARY OF SERVICES', fillColor: '#dddddd', colSpan: 4, alignment: 'center'}, {}, {}, {}],
+	{fontSize: 10, alignment: 'left', margin: [0, 10, 0, 0], table: { widths: ['*', '*', '*', '*'], body: [
+		[{text: 'SUMMARY OF SERVICES', style: 'tableHeader', colSpan: 4}, {}, {}, {}],
 		[{ul: [
 				{text: 'General Welding', listType: 'circle'},
-				{text: 'General Repair', listType: 'dot'},
+				{text: 'General Repair', listType: 'circle'},
 				{text: 'Basement Door', listType: 'circle'}
 			]}, {ul: [
 				{text: 'Fire Escapes', listType: 'circle'},
-				{text: 'Awnings', listType: 'dot'},
+				{text: 'Awnings', listType: 'circle'},
 				{text: 'Railings', listType: 'circle'}
 			]}, {ul: [
 				{text: 'Fences', listType: 'circle'},
-				{text: 'Stairs', listType: 'dot'},
+				{text: 'Stairs', listType: 'circle'},
 				{text: 'Gates', listType: 'circle'}
 			]}, {ul: [
 				{text: 'Security Door', listType: 'circle'},
-				{text: 'Window Guards', listType: 'dot'},
+				{text: 'Window Guards', listType: 'circle'},
 				{text: 'Other Services', listType: 'circle'}
 	]}]]}},
-	{style: 'tableDescription', table: { heights: ['', 170, 30, 30, 30], widths: [250, 120, '*'], body: [
-	[{ text: 'Description', fillColor: '#dddddd', alignment: 'center' }, {text: 'Worksite', fillColor: '#dddddd', alignment: 'center' }, {text: 'Total', fillColor: '#dddddd', alignment: 'center' }],
+	{alignment: 'left', margin: [0, 10, 0, 0], table: { heights: ['', 220, 30, 30, 30], widths: [250, 120, '*'], body: [
+	[{text: 'DESCRIPTION', style: 'tableHeader'}, {text: 'WORKSITE', style: 'tableHeader'}, {text: 'TOTAL', style: 'tableHeader'}],
 	[{ type: 'none', ul: [
 					{text: 'Service of:', margin: [0, 0, 0, 10], },
-					'Design, manufacture and Installation Motorized Wrought Iron Sliding Gate.'
+					{text: 'Design, manufacture and Installation Motorized Wrought Iron Sliding Gate.', style: 'tableBody'},
+					{text: 'Estimate time for project completion 3 to 4 weeks', fontSize: 8, margin: [0, 160, 0, 0], },
 				]},
-				{ type: 'none', ul: [
+				{ type:'none', style:'tableBody', alignment:'center', margin:[-10, 6, 0, 0], ul: [
 			'536 N Walnut St',
 			'East Orange, NJ'
 		]}, { type: 'none', ul: [
-			{text: '$2800.00', style: 'total'},
+			{text: '$2800.00', style: 'price'},
 		]}],
 		[{border: [false, false, false, false], text: ''},
-			{text: 'Subotal', style: 'total'},
+			{text: 'Subotal', style: 'price'},
 			{ type: 'none', ul: [
-			{text: '$2800.00', style: 'total'},
+			{text: '$2800.00', style: 'price'},
 		]}],
-	[{border: [false, false, false, false], text: ''},
-			{text: 'Tax 6.625%', style: 'total'},
+	[{border: [false, false, false, false], fontSize: 10, text: 'Address for payments by check and other documents:'},
+			{text: 'Tax 6.625%', style: 'price'},
 			{ type: 'none', ul: [
-			{text: '$2800.00', style: 'total'},
+			{text: '$2800.00', style: 'price'},
 		]}],
-	[{border: [false, false, false, false], text: ''},
-	{text: 'Total', style: 'total'},
+	[{border: [false, false, false, false], fontSize: 10, bold: true, text: '14 Parkside Dr, Apt 2, Belleville NJ 07109'},
+	{text: 'Total', style: 'price'},
 	{type: 'none', ul: [
-	{text: '$2800.00', style: 'total'},
+	{text: '$2800.00', style: 'price'},
 	]}]]}},
-	{style: 'tableNote', table: { widths: ['*'], body: [
-		[{text: 'SUMMARY OF SERVICES', fillColor: '#dddddd', alignment: 'center' }],
-		[{text: 'This proposal is valid for 15 days following the date above. Estimated completion date is within 2 to 3 weeks from the date the contract is signed (possibility of delay due to unforeseen circumstances and interferences). A down payment is required when signing the contract (maximum of 3 days for a late payment if not given at signing). Down payment will be 50% of the total price and is non-refundable. The remaining 50% must be given once the service is complete. Any unforeseen or unnegotiated addition of work will be documented and may increase the total price. Please note that all items ordered in iron will rust.', style: 'note' }]]}}
+	{margin: [0, 30, 0, 0], table: { widths: ['*'], body: [
+		[{text: 'NOTE',  style: 'tableHeader'}],
+		[{text: 'This proposal is valid for 15 days following the date above. Estimated completion date is within 2 to 3 weeks from the date the contract is signed (possibility of delay due to unforeseen circumstances and interferences). A down payment is required when signing the contract (maximum of 3 days for a late payment if not given at signing). Down payment will be 50% of the total price and is non-refundable. The remaining 50% must be given once the service is complete. Any unforeseen or unnegotiated addition of work will be documented and may increase the total price. Please note that all items ordered in iron will rust.', fontSize: 7, alignment: 'center' }]]}}
 	],
 	styles: {
-		type: {
-			bold: true,
-			margin: [340, 30, 0, 0],
-			alignment: 'center',
-			fontSize: 24
-		},
-		note: {
-			fontSize: 9,
-			alignment: 'center',
-		},
-		total: {
-			bold: true,
-			alignment: 'center',
-			margin: [-10, 6, 0, 0]
-		},
-		header: {
-			bold: true,
-			alignment: 'right',
-			margin: [360, -50, 0, -80]
-		},
-		date: {
-			alignment: 'center'
-		},
-		customer: {
-			alignment: 'center',
-			margin: [0, 120, 0, 0]
-		},
-		tableServices: {
-			fontSize: 10,
-			alignment: 'left',
-			margin: [0, 10, 0, 0]
-		},
-		tableDescription: {
-			alignment: 'left',
-			margin: [0, 10, 0, 0]
-		},
-		tableNote: {
-			alignment: 'left',
-			margin: [0, 30, 0, 0]
-		},
+		tableHeader: {fillColor: '#dddddd', alignment: 'center', fontSize: 10, bold: true },
+		tableBody: { fontSize: 10 },
+		price: { bold: true, alignment: 'center', margin: [-10, 6, 0, 0] },
 	}
-	};
-
+};
 
 } else if (docType === 'Invoice') {
 
 	var docDefinition = {
-	content: [{text: 'Invoice', style: 'type'}, {<%- include("logo") -%>},
+	content: [{<%- include("logo") -%>}, {text: 'Invoice', style: 'document'},
 	{ style: 'header', stack: [{ style: 'date', table: { body: [
-				[{text: 'Date', fillColor: '#dddddd'}, {text: 'Invoice #', fillColor: '#dddddd'}],
+				[{text: 'Date', style: 'tableHeader'}, {text: 'Estimate #', style: 'tableHeader'}],
 				[document.getElementById("date").value, document.getElementById("number").value]
 	]}}]},
 	{ style: 'customer', stack: [{ style: 'table2', table: { widths: ['*', '*'], body: [
-		[{text: 'SERVICE PROVIDER', sytle: 'title', fillColor: '#dddddd'}, {text: 'CUSTOMER', fillColor: '#dddddd'}],
-		[ {type: 'none', ul: [
+		[{text: 'SERVICE PROVIDER', style: 'tableHeader'}, {text: 'CUSTOMER', style: 'tableHeader'}],
+		[ {type: 'none', style: 'tableBody', ul: [
 				'Jecche Steel • Glass • Aluminum LLC',
 				'829 Broadway Avenue',
 				'Newark, NJ 07104',
 				'Phone: (862) 234-1559 Cell: (973) 368-3248',
 				'Email: jecchellc@yahoo.com',
 				'Web: www.jecche.com'
-				]}, {type: 'none', ul: [
+				]}, {type: 'none',  style: 'tableBody', ul: [
 				'Jecche Steel • Glass • Aluminum LLC',
 				'829 Broadway Avenue',
 				'Newark, NJ 07104',
@@ -190,31 +148,31 @@ if (docType === "Estimate") {
 				'Web: www.jecche.com'
 		]}]]}}]},
 	{style: 'tableServices', table: { widths: ['*', '*', '*', '*'], body: [
-		[{text: 'SUMMARY OF SERVICES', fillColor: '#dddddd', colSpan: 4, alignment: 'center'}, {}, {}, {}],
+		[{text: 'SUMMARY OF SERVICES', style: 'tableHeader', colSpan: 4}, {}, {}, {}],
 		[{ul: [
 				{text: 'General Welding', listType: 'circle'},
-				{text: 'General Repair', listType: 'dot'},
+				{text: 'General Repair', listType: 'circle'},
 				{text: 'Basement Door', listType: 'circle'}
 			]}, {ul: [
 				{text: 'Fire Escapes', listType: 'circle'},
-				{text: 'Awnings', listType: 'dot'},
+				{text: 'Awnings', listType: 'circle'},
 				{text: 'Railings', listType: 'circle'}
 			]}, {ul: [
 				{text: 'Fences', listType: 'circle'},
-				{text: 'Stairs', listType: 'dot'},
+				{text: 'Stairs', listType: 'circle'},
 				{text: 'Gates', listType: 'circle'}
 			]}, {ul: [
 				{text: 'Security Door', listType: 'circle'},
-				{text: 'Window Guards', listType: 'dot'},
+				{text: 'Window Guards', listType: 'circle'},
 				{text: 'Other Services', listType: 'circle'}
 	]}]]}},
-	{style: 'tableDescription', table: { heights: ['', 170, 30, 30, 30], widths: [250, 120, '*'], body: [
-	[{ text: 'Description', fillColor: '#dddddd', alignment: 'center' }, {text: 'Worksite', fillColor: '#dddddd', alignment: 'center' }, {text: 'Total', fillColor: '#dddddd', alignment: 'center' }],
+	{style: 'tableDescription', table: { heights: ['', 220, 30, 30, 30], widths: [250, 120, '*'], body: [
+	[{text: 'DESCRIPTION', style: 'tableHeader'}, {text: 'WORKSITE', style: 'tableHeader'}, {text: 'TOTAL', style: 'tableHeader'}],
 	[{ type: 'none', ul: [
 					{text: 'Service of:', margin: [0, 0, 0, 10], },
-					'Design, manufacture and Installation Motorized Wrought Iron Sliding Gate.'
+					{text: 'Design, manufacture and Installation Motorized Wrought Iron Sliding Gate.', style: 'tableBody'}
 				]},
-				{ type: 'none', ul: [
+				{ type: 'none', style: 'tableBody', alignment: 'center', margin: [-10, 6, 0, 0], ul: [
 			'536 N Walnut St',
 			'East Orange, NJ'
 		]}, { type: 'none', ul: [
@@ -225,79 +183,50 @@ if (docType === "Estimate") {
 			{ type: 'none', ul: [
 			{text: '$2800.00', style: 'total'},
 		]}],
-	[{border: [false, false, false, false], text: ''},
+	[{border: [false, false, false, false], fontSize: 10, text: 'Address for payments by check and other documents:'},
 			{text: 'Tax 6.625%', style: 'total'},
 			{ type: 'none', ul: [
 			{text: '$2800.00', style: 'total'},
 		]}],
-	[{border: [false, false, false, false], text: ''},
+	[{border: [false, false, false, false], fontSize: 10, bold: true, text: '14 Parkside Dr, Apt 2, Belleville NJ 07109'},
 	{text: 'Total', style: 'total'},
 	{type: 'none', ul: [
 	{text: '$2800.00', style: 'total'},
 	]}]]}},
 	],
 	styles: {
-		type: {
-			bold: true,
-			margin: [340, 30, 0, 0],
-			alignment: 'center',
-			fontSize: 24
-		},
-		note: {
-			fontSize: 9,
-			alignment: 'center',
-		},
-		total: {
-			bold: true,
-			alignment: 'center',
-			margin: [-10, 6, 0, 0]
-		},
-		header: {
-			bold: true,
-			alignment: 'right',
-			margin: [360, -50, 0, -80]
-		},
-		date: {
-			alignment: 'center'
-		},
-		customer: {
-			alignment: 'center',
-			margin: [0, 120, 0, 0]
-		},
-		tableServices: {
-			fontSize: 10,
-			alignment: 'left',
-			margin: [0, 10, 0, 0]
-		},
-		tableDescription: {
-			alignment: 'left',
-			margin: [0, 10, 0, 0]
-		},
-		tableNote: {
-			alignment: 'left',
-			margin: [0, 30, 0, 0]
-		},
+		logo: { margin: [0, 50, 0, 0] },
+		document: { bold: true, margin: [390, -60, 0, 0], alignment: 'center', fontSize: 24 },
+		header: { bold: true, alignment: 'right', margin: [395, 0, 0, -80] },
+		tableHeader: {fillColor: '#dddddd', alignment: 'center', fontSize: 10, bold: true },
+		tableBody: { fontSize: 10 },
+		customer: { alignment: 'center', margin: [0, 100, 0, 0] },
+		total: { bold: true, alignment: 'center', margin: [-10, 6, 0, 0] },
+		tableServices: { fontSize: 10, alignment: 'left', margin: [0, 10, 0, 0]},
+		tableDescription: { alignment: 'left', margin: [0, 10, 0, 0] },
+		tableNote: { alignment: 'left', margin: [0, 30, 0, 0] },
+		note: { fontSize: 7, alignment: 'center' },
 	}
-	};
+};
 
 } else if (docType === 'Contract') {
 
 	var docDefinition = {
-	content: [{text: 'Contract', style: 'type'}, {<%- include("logo") -%>},
-	{ style: 'header', stack: [{ style: 'date', table: { body: [
-				[{text: 'Date', fillColor: '#dddddd'}, {text: 'Contract #', fillColor: '#dddddd'}],
-				[document.getElementById("date").value, document.getElementById("number").value]
+	content: [{<%- include("logo") -%>}, {text: 'Contract', style: 'document'},
+	{ style: 'tableNumber', stack: [{ style: 'date', table: { body: [
+		[{text: 'Date', style: 'tableHeader'}, {text: 'Contract #', style: 'tableHeader'}],
+		[document.getElementById("date").value, document.getElementById("number").value]
 	]}}]},
 	{ style: 'customer', stack: [{ style: 'table2', table: { widths: ['*', '*'], body: [
-		[{text: 'SERVICE PROVIDER', sytle: 'title', fillColor: '#dddddd'}, {text: 'CUSTOMER', fillColor: '#dddddd'}],
-		[ {type: 'none', ul: [
+		[{text: 'SERVICE PROVIDER', style: 'tableHeader'}, {text: 'CUSTOMER', style: 'tableHeader'}],
+		[ {type: 'none', style: 'tableBody', ul: [
 				'Jecche Steel • Glass • Aluminum LLC',
 				'829 Broadway Avenue',
 				'Newark, NJ 07104',
 				'Phone: (862) 234-1559 Cell: (973) 368-3248',
 				'Email: jecchellc@yahoo.com',
 				'Web: www.jecche.com'
-				]}, {type: 'none', ul: [
+			]}, {type: 'none',  style: 'tableBody', ul: [
 				'Jecche Steel • Glass • Aluminum LLC',
 				'829 Broadway Avenue',
 				'Newark, NJ 07104',
@@ -306,95 +235,78 @@ if (docType === "Estimate") {
 				'Web: www.jecche.com'
 		]}]]}}]},
 	{style: 'tableServices', table: { widths: ['*', '*', '*', '*'], body: [
-		[{text: 'SUMMARY OF SERVICES', fillColor: '#dddddd', colSpan: 4, alignment: 'center'}, {}, {}, {}],
+		[{text: 'SUMMARY OF SERVICES', style: 'tableHeader', colSpan: 4}, {}, {}, {}],
 		[{ul: [
 				{text: 'General Welding', listType: 'circle'},
-				{text: 'General Repair', listType: 'dot'},
+				{text: 'General Repair', listType: 'circle'},
 				{text: 'Basement Door', listType: 'circle'}
 			]}, {ul: [
 				{text: 'Fire Escapes', listType: 'circle'},
-				{text: 'Awnings', listType: 'dot'},
+				{text: 'Awnings', listType: 'circle'},
 				{text: 'Railings', listType: 'circle'}
 			]}, {ul: [
 				{text: 'Fences', listType: 'circle'},
-				{text: 'Stairs', listType: 'dot'},
+				{text: 'Stairs', listType: 'circle'},
 				{text: 'Gates', listType: 'circle'}
 			]}, {ul: [
 				{text: 'Security Door', listType: 'circle'},
-				{text: 'Window Guards', listType: 'dot'},
+				{text: 'Window Guards', listType: 'circle'},
 				{text: 'Other Services', listType: 'circle'}
 	]}]]}},
-	{style: 'tableDescription', table: { heights: ['', 170, 30, 30, 30], widths: [250, 120, '*'], body: [
-	[{ text: 'Description', fillColor: '#dddddd', alignment: 'center' }, {text: 'Worksite', fillColor: '#dddddd', alignment: 'center' }, {text: 'Total', fillColor: '#dddddd', alignment: 'center' }],
-	[{ type: 'none', ul: [
-					{text: 'Service of:', margin: [0, 0, 0, 10], },
-					'Design, manufacture and Installation Motorized Wrought Iron Sliding Gate.'
-				]},
-				{ type: 'none', ul: [
-			'536 N Walnut St',
-			'East Orange, NJ'
-		]}, { type: 'none', ul: [
-			{text: '$2800.00', style: 'total'},
-		]}],
-		[{border: [false, false, false, false], text: ''},
-			{text: 'Subotal', style: 'total'},
-			{ type: 'none', ul: [
-			{text: '$2800.00', style: 'total'},
-		]}],
-	[{border: [false, false, false, false], text: ''},
-			{text: 'Tax 6.625%', style: 'total'},
-			{ type: 'none', ul: [
-			{text: '$2800.00', style: 'total'},
-		]}],
-	[{border: [false, false, false, false], text: ''},
-	{text: 'Total', style: 'total'},
-	{type: 'none', ul: [
-	{text: '$2800.00', style: 'total'},
-	]}]]}},
+	{text: 'SERVICE AGREEMENT', style: 'header' },
+	{text: '1. DESCRIPTION OF SERVICES. Beginning on upon agreement to this contract Jecche Steel Glass & Aluminum LLC will provide to Mr. Johnny Hernandez the following services:', style: 'paragraph' },
+	{ stack: [{ table: { heights: [0, 160], body: [
+		[{text: 'Service of:', fontSize: 10, border: [false, false, false, false]}],
+		[{border: [false, false, false, false], ul: [
+			{text: 'If a party defaults by failing to substantially perform any provision, term or condition of this Contract (including without limitation the failure to make a monetary payment when due), the other party may terminate the Contract by providing written notice to the defaulting party. This notice shall describe with sufficient detail the nature of the default. The party receiving such notice shall have 30 days from the effective date of such notice to cure the default(s). Unless waived by a party providing notice, the failure to cure the default(s) within such time period shall result in the automatic termination of this Contract.', listType: 'dot', margin: [0, 0, 0, 5]},
+			{text: 'General Repair', listType: 'dot', margin: [0, 0, 0, 5]},
+			{text: 'Basement Door', listType: 'dot', margin: [0, 0, 0, 5]}
+		]}]
+	]}}]},
+	{type: 'none',  style: 'tableBody', ul: [
+		{text: 'Worksite: 536 N Walnut St, East Orange, NJ', fontSize: 8, margin: [0, 10, 0, 0] },
+		{text: 'Note: Estimate time for project completion 3 to 4 weeks', fontSize: 8, margin: [0, 10, 0, 0], },
+	]},
+	{text: '2. PAYMENT FOR SERVICES. In exchange for the services Mr. Johnny Hernandez will pay Jecche Steel, Glass & Aluminum LLC according to the following schedule:', style: 'paragraph' },
+	{stack: [{ table: { widths: [400, '*'], body: [
+		[{text: 'Subtotal', fontSize: 10}, {text: '$2800.00', fontSize: 10, alignment: 'center'}],
+		[{text: 'Tax 6.625%', fontSize: 10}, {text: '$2800.00', fontSize: 10, alignment: 'center'}],
+		[{text: 'Total', fontSize: 10}, {text: '$2800.00', fontSize: 10, alignment: 'center'}],
+		[{text: '1st Payment (Non Refundable Down Payment due at signing of the contract)', fontSize: 10}, {text: '$2800.00', fontSize: 10, alignment: 'center'}],
+		[{text: '2nd Payment (Remainder of amount upon completion)', fontSize: 10}, {text: '$2800.00', fontSize: 10, alignment: 'center'}]
+	]}}]},
+
+	{text: '3. TERM. This Contract takes effect immediately as of the Signed Date, and will terminate automatically upon completion by Jecche Steel, Glass & Aluminum LLC of the Services required by this Contract.', style: 'paragraph' },
+	{text: '4. WORK PRODUCT OWNERSHIP. Any copyrightable works, ideas, inventions, products, or other information developed in whole or in part by Jecche Steel, Glass & Aluminum LLC in connection with the Services will be the exclusive property of Jecche Steel, Glass & Aluminum LLC. ', style: 'paragraph' },
+	{text: '5. REMEDIES. If a party defaults by failing to substantially perform any provision, term or condition of this Contract (including without limitation the failure to make a monetary payment when due), the other party may terminate the Contract by providing written notice to the defaulting party. This notice shall describe with sufficient detail the nature of the default. The party receiving such notice shall have 30 days from the effective date of such notice to cure the default(s). Unless waived by a party providing notice, the failure to cure the default(s) within such time period shall result in the automatic termination of this Contract.', style: 'paragraph' },
+	{text: '6. ENTIRE AGREEMENT. This Contract contains the entire agreement of the parties, and there are no other promises or conditions in any other agreement whether oral or written concerning the subject matter of this Contract. This Contract supersedes any prior written or oral agreements between the parties.', style: 'paragraph' },
+	{text: '7. WARRANTY. Jecche Steel, Glass & Aluminum LLC warrants its products and services to be free from manufacturing defects in material and workmanship to the original consumer purchaser for a period of 1 year from the date of installation. Please note, gate operators and other access control systems and accessories are supplied with original manufacturer’s warranties. During the first year, defects in these components will be repaired without charge to the customer.', style: 'paragraph' },
+	{text: 'This warranty does not cover damage caused by abnormal or improper use, improper product application, accident, alteration, welding, neglect, abuse, lawn care equipment or vehicle damage, abrasion, harsh chemicals, pool chemicals or chemicals for ice removal, air pollutants, lack of maintenance, or damage cause by flood, fire or acts of God. The original consumer must contact Jecche Steel, Glass & Aluminum LLC via email at jecchellc@yahoo.com to obtain necessary warranty claim forms and start a claim process.  The original consumer purchaser will be notified by Jecche Steel, Glass & Aluminum LLC as to whether the warranty claim is approved or denied.  PROOF OF PURCHASE AND FULL PAYMENT TO JECCHE STEEL, GLASS AND ALUMINUM LLC FOR SERVICE RENDERED OR MATERIALS PROVIDED MUST ACCOMPANY ALL WARRANTY CLAIMS.', style: 'paragraph', margin: [0, 0, 0, 100] },
+	{ stack: [{ table: {widths: ['*', '*'], body: [
+		[ {border: [false, false, false, false], type: 'none', style: 'tableBody', ul: [
+			{text: 'Jecche Steel, Glass & Aluminum LLC', margin: [0, 0, 0, 30], bold: true},
+			{text: 'Name: Carlos Chafloque', margin: [0, 0, 0, 30]},
+			{text: 'Signature: ____________________________________'},
+		]}, {border: [false, false, false, false], type: 'none',  style: 'tableBody', ul: [
+			{text: 'Service Recipient:', margin: [0, 0, 0, 30], bold: true},
+			{text: 'Name: ______________________________________', margin: [0, 0, 0, 39]},
+			{text: 'Signature: ___________________________________'},
+		]}]
+	]}}]},
 	],
 	styles: {
-		type: {
-			bold: true,
-			margin: [340, 30, 0, 0],
-			alignment: 'center',
-			fontSize: 24
-		},
-		note: {
-			fontSize: 9,
-			alignment: 'center',
-		},
-		total: {
-			bold: true,
-			alignment: 'center',
-			margin: [-10, 6, 0, 0]
-		},
-		header: {
-			bold: true,
-			alignment: 'right',
-			margin: [360, -50, 0, -80]
-		},
-		date: {
-			alignment: 'center'
-		},
-		customer: {
-			alignment: 'center',
-			margin: [0, 120, 0, 0]
-		},
-		tableServices: {
-			fontSize: 10,
-			alignment: 'left',
-			margin: [0, 10, 0, 0]
-		},
-		tableDescription: {
-			alignment: 'left',
-			margin: [0, 10, 0, 0]
-		},
-		tableNote: {
-			alignment: 'left',
-			margin: [0, 30, 0, 0]
-		},
+		header: {alignment: 'center', bold: true, fontSize: 16, margin: [0, 30, 0, 20]},
+		paragraph: {fontSize: 10, margin: [0, 10, 0, 10]},
+		logo: { margin: [0, 50, 0, 0] },
+		document: { bold: true, margin: [390, -60, 0, 0], alignment: 'center', fontSize: 24 },
+		tableNumber: { bold: true, alignment: 'right', margin: [395, 0, 0, -80] },
+		tableHeader: {fillColor: '#dddddd', alignment: 'center', fontSize: 10, bold: true },
+		tableBody: { fontSize: 10 },
+		customer: { alignment: 'center', margin: [0, 100, 0, 0] },
+		tableServices: { fontSize: 10, alignment: 'left', margin: [0, 10, 0, 0]},
 	}
-	};
+};
+
 
 }
 pdfMake.createPdf(docDefinition).open();

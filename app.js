@@ -20,14 +20,18 @@ app.get("/", function(req, res) {
 
 app.get("/:itemNumber", function(req, res) {
   const selectedNumber = req.params.itemNumber;
+  var lastNumber = Number;
   var doc = String;
+  Item.find(function(err, lastItem){
+    lastNumber = lastItem;
+  }).limit(1).sort({$natural:-1});
   Item.findOne({number: selectedNumber}, function(err, foundItem){
     if (foundItem){
        doc = selectedNumber;
     } else {
-     doc = "New Document";
+      doc = "New Document";
     }
-    res.render("item", {item: foundItem, Document: doc});
+    res.render("item", {item: foundItem, Document: doc, Numberr: lastNumber});
   });
 });
 
