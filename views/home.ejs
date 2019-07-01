@@ -1,31 +1,26 @@
 <%- include("header") -%>
-
-
 <div class="box">
-
-  <form class="form-signin" action="/" method="post">
-    <img class="mb-4" src="/img/logo.png" alt="">
+    <div class="text-center">
+      <img class="mb-4" src="/img/logo.png" alt="">
       <div class="box" id="heading">
         <h1 class="h3 mb-3 font-weight-normal">Invoicer</h1>
       </div>
-    <% dbItems.forEach(function(dbItems){ %>
-
-    <ul class="list-group">
-      <a href="/<%=  dbItems.number  %>">
-        <li class="list-group-item"><%=  dbItems.number  %></li>
-      </a>
-    </ul>
-    <% }); %>
-    <div class="button-box">
-      <a class="btn btn-lg btn-primary btn-block" href="/item">New Item</a>
     </div>
-  </form>
- 
+    <div>
+    <div class="form-signin">
+      <% dbItems.forEach(function(dbItems){ %>
+      <ul class="list-group">
+        <a href="/<%=  dbItems.number  %>">
+          <li class="list-group-item"><%=  dbItems.number  %></li>
+        </a>
+      </ul>
+      <% }); %>
+      <div class="button-box">
+        <a class="btn btn-lg btn-primary btn-block" href="/item">New Item</a>
+    </div>
+    </div>
 </div>
-
 <%- include("footer") -%>
-
-
 <!-- <form class="form-signin">
   <img class="mb-4" src="/docs/4.3/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">
   <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>

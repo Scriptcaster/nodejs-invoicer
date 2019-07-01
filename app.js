@@ -8,7 +8,7 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
 mongoose.connect("mongodb://localhost:27017/test", {useNewUrlParser: true});
-const itemSchema = { number: String, date: String };
+const itemSchema = { number: String, date: String, customer: String, worksite: String };
 const Item = mongoose.model("Item", itemSchema);
 
 
@@ -22,41 +22,40 @@ app.get("/:itemNumber", function(req, res) {
   const selectedNumber = req.params.itemNumber;
   var lastNumber = Number;
   var doc = String;
-  Item.find(function(err, lastItem){
-    lastNumber = lastItem;
-  }).limit(1).sort({$natural:-1});
-  console.log(selectedNumber);
+  Item.find(function(err, lastItem){ lastNumber = lastItem; }).limit(1).sort({$natural:-1});
   Item.findOne({number: selectedNumber}, function(err, foundItem){
     console.log(foundItem);
-    if (foundItem){
-       doc = selectedNumber;
-    } else {
-      doc = "New Document";
-    }
+    if (foundItem){ doc = selectedNumber; } else { doc = "New Document"; }
     res.render("item", {item: foundItem, Document: doc, Numberr: lastNumber});
   });
 });
 
 app.post("/", function(req, res){
-   const selectedNumber = req.body.itemNumber;
-   console.log(selectedNumber);
-   Item.findOne({number: selectedNumber}, function(err, foundItem){
-    if (foundItem) {
-      // foundItem.replaceOne({number: selectedNumber}, function(err, foundItem){
-        console.log("replaced");
-      // });
-    } else {
-      console.log("create new");
-      const item = new Item({
+  const selectedNumber = req.body.itemNumber;
+  const item = new Item({
+    number: req.body.itemNumber,
+    date: req.body.itemDate,
+    customer: req.body.itemCustomer,
+    worksite: req.body.itemWorksite
+  });
+  
+  Item.findOne({number: selectedNumber}, function(err, foundItem){
+     if (foundItem) {
+       console.log('FOUND ITEM' + selectedNumber);
+       console.log('REPLACE');
+       Item.findOneAndUpdate({number: selectedNumber }, { 
         number: req.body.itemNumber,
         date: req.body.itemDate,
-      });
-      if (selectedNumber) {
+        customer: req.body.itemCustomer,
+        worksite: req.body.itemWorksite 
+       }, function(err, foundItem){
+         res.redirect("/");
+       });
+     } else {
         item.save();
-      }
-    }
-   });
-  res.redirect("/");
+        res.redirect("/");
+     }
+  });
 });
 
 app.post("/delete", function(req, res) {

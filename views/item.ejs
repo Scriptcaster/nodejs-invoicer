@@ -1,18 +1,31 @@
 <%- include("header") -%>
 <div class="box">
 	<form class="form-signin" action="/" method="post">
-		<a href="/"><img class="mb-4" src="/img/logo.png" alt=""></a>
-		<div class="box" id="heading">
-			<h1 class="h3 mb-3 font-weight-normal"><%= Document %></h1>
+		<div class="text-center">
+			<a href="/"><img class="mb-4" src="/img/logo.png" alt=""></a>
+			<div class="box" id="heading">
+				<h1 class="h3 mb-3 font-weight-normal"><%= Document %></h1>
+			</div>
 		</div>
-		<input id="number" class="form-control" type="text" value="<% if (item) { %><%= item.number%><% } else if (Numberr[0]) { %><%= new Date().getFullYear().toString().substr(-2) %><% if (parseInt(Numberr[0].number.substr(-2)) > 8) {%><%= '-00' %><% } else {%><%= '-000' %><% } %><%= (parseInt(Numberr[0].number.substr(-2)) + 1) %><% } else { %><%= '19-0001' %> <% } %>" name="itemNumber" placeholder="Number">
-		<input id="date" class="form-control" type="text" value="<% if (item) { %><%= item.date%><% } else { %><%= new Date().getMonth()+1+'/'+new Date().getDate()+'/'+ new Date().getFullYear() %><% }%>" name="itemDate" placeholder="Date">
+		
+		<label>Number</label>
+		<input id="number" class="form-control" type="text" value="<% if (item) { %><%= item.number%><% } else if (Numberr[0]) { %><%= new Date().getFullYear().toString().substr(-2) %><% if (parseInt(Numberr[0].number.substr(-2)) > 8) {%><%= '-00' %><% } else {%><%= '-000' %><% } %><%= (parseInt(Numberr[0].number.substr(-2)) + 1) %><% } else { %><%= '19-0001' %><% } %>" name="itemNumber" placeholder="Number">
+		
+		<label>Date</label>
+		<input id="date" class="form-control" type="text" value="<% if (item) { %><%= item.date %><% } else { %><%= new Date().getMonth()+1+'/'+new Date().getDate()+'/'+ new Date().getFullYear() %><% }%>" name="itemDate" placeholder="Date">
+		
+		<label>Customer</label>
+		<textarea id="customer" class="form-control" type="text" name="itemCustomer" placeholder="Customer" rows="5"><% if (item) { %><%= item.customer %><% } %></textarea>
+
+		<label>Worksite</label>
+		<textarea id="worksite" class="form-control" type="text" name="itemWorksite" placeholder="Worksite" rows="2"><% if (item) { %><%= item.worksite %><% } %></textarea>
+
 		<div class="button-box">
 			<button class="btn btn-lg btn-primary btn-lg btn-block" type="submit" name="item">Save</button>
 			<a class="btn btn-success btn-lg btn-block" onClick = "generatePdf();">Generate PDF</a>
 		</div>
 	</form>
-	<div class="form-group">
+	<div class="form-group text-center">
 		<div class="btn-group" data-toggle="buttons" class="col-lg-3 col-lg-offset-10">
 	    <label class="btn btn-default **active**">
 	    <input type="radio" name="inputWalls" class="doc" value="Estimate" checked>  Estimate</label>
@@ -22,7 +35,7 @@
 	    <input type="radio" name="inputWalls" class="doc" value="Contract">  Contract</label>
 	  </div>
 	</div>
-	<form action="/delete" method="post">
+	<form action="/delete" method="post" class=text-center>
 		<div class="button-box">
 			<button class="btn btn-link" type="submit" name="id" value="<% if (item) { %><%= item._id%><% } %>">Remove</button>
 		</div>
@@ -44,8 +57,8 @@ if (docType === "Estimate") {
 	var docDefinition = {
 	content: [{<%- include("logo") -%>, margin: [0, 50, 0, 0]}, {text: 'Estimate', bold: true, margin: [390, -60, 0, 0], alignment: 'center', fontSize: 24},
 	{ bold: true, alignment: 'right', margin: [395, 0, 0, -80], stack: [{alignment: 'center', table: { body: [
-				[{text: 'Date', style: 'tableHeader'}, {text: 'Estimate #', style: 'tableHeader'}],
-				[document.getElementById("date").value, document.getElementById("number").value]
+		[{text: 'Date', style: 'tableHeader'}, {text: 'Estimate #', style: 'tableHeader'}],
+		[document.getElementById("date").value, document.getElementById("number").value]
 	]}}]},
 	{ alignment: 'center', margin: [0, 100, 0, 0], stack: [{ table: { widths: ['*', '*'], body: [
 		[{text: 'SERVICE PROVIDER', style: 'tableHeader'}, {text: 'CUSTOMER', style: 'tableHeader'}],
