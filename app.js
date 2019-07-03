@@ -7,10 +7,36 @@ const app = express();
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
-mongoose.connect("mongodb://localhost:27017/test", {useNewUrlParser: true});
-const itemSchema = { number: String, date: String, customer: String, worksite: String };
-const Item = mongoose.model("Item", itemSchema);
+mongoose.connect("mongodb+srv://admin-ravos:Mgi86Shift@cluster0-g2cja.mongodb.net/dynamo", {useNewUrlParser: true});
+const itemSchema = { 
+  number: String, 
+  date: String,
+  attn: String,  
+  customer: String, 
+  worksite: String, 
 
+  generalWelding: String,
+  generalRepair: String,
+  basementDoor: String,
+
+  fireEscapes: String,
+  awnings: String,
+  railings: String,
+
+  fences: String,
+  stairs: String,
+  gates: String,
+
+  securityDoor: String,
+  windowGuards: String,
+  otherServices: String,
+
+  description: String, 
+  note: String, 
+  price: String, 
+  tax: String 
+};
+const Item = mongoose.model("Item", itemSchema);
 
 app.get("/", function(req, res) {
   Item.find({}, function(err, dbItems){ 
@@ -31,23 +57,66 @@ app.get("/:itemNumber", function(req, res) {
 });
 
 app.post("/", function(req, res){
+  console.log( req.body.itemTax  );
   const selectedNumber = req.body.itemNumber;
   const item = new Item({
     number: req.body.itemNumber,
     date: req.body.itemDate,
+    attn: req.body.itemAttn,
     customer: req.body.itemCustomer,
-    worksite: req.body.itemWorksite
+    worksite: req.body.itemWorksite,
+
+    generalWelding: req.body.itemGeneralWelding,
+    generalRepair: req.body.itemGeneralRepair,
+    basementDoor: req.body.itemBasementDoor,
+
+    fireEscapes: req.body.itemFireEscapes,
+    awnings: req.body.itemAwnings,
+    railings: req.body.itemRailings,
+
+    fences: req.body.itemFences,
+    stairs: req.body.itemStairs,
+    gates: req.body.itemGates,
+
+    securityDoor: req.body.itemSecurityDoor,
+    windowGuards: req.body.itemWindowGuards,
+    otherServices: req.body.itemOtherServices,
+
+    description: req.body.itemDescription,
+    note: req.body.itemNote,
+    price: req.body.itemPrice,
+    tax: req.body.itemTax
   });
   
   Item.findOne({number: selectedNumber}, function(err, foundItem){
      if (foundItem) {
-       console.log('FOUND ITEM' + selectedNumber);
-       console.log('REPLACE');
        Item.findOneAndUpdate({number: selectedNumber }, { 
         number: req.body.itemNumber,
         date: req.body.itemDate,
+        attn: req.body.itemAttn,
         customer: req.body.itemCustomer,
-        worksite: req.body.itemWorksite 
+        worksite: req.body.itemWorksite,
+
+        generalWelding: req.body.itemGeneralWelding,
+        generalRepair: req.body.itemGeneralRepair,
+        basementDoor: req.body.itemBasementDoor,
+
+        fireEscapes: req.body.itemFireEscapes,
+        awnings: req.body.itemAwnings,
+        railings: req.body.itemRailings,
+
+        fences: req.body.itemFences,
+        stairs: req.body.itemStairs,
+        gates: req.body.itemGates,
+
+        securityDoor: req.body.itemSecurityDoor,
+        windowGuards: req.body.itemWindowGuards,
+        otherServices: req.body.itemOtherServices,
+
+        description: req.body.itemDescription,
+        note: req.body.itemNote,
+        price: req.body.itemPrice,
+        tax: req.body.itemTax    
        }, function(err, foundItem){
          res.redirect("/");
        });

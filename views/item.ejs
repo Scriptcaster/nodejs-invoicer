@@ -13,12 +13,105 @@
 		
 		<label>Date</label>
 		<input id="date" class="form-control" type="text" value="<% if (item) { %><%= item.date %><% } else { %><%= new Date().getMonth()+1+'/'+new Date().getDate()+'/'+ new Date().getFullYear() %><% }%>" name="itemDate" placeholder="Date">
+
+		<label>Cotract Name</label>
+		<input id="attn" class="form-control" type="text" name="itemAttn" placeholder="Client Name" value="<% if (item) { %><%= item.attn %><% } %>">
 		
 		<label>Customer</label>
 		<textarea id="customer" class="form-control" type="text" name="itemCustomer" placeholder="Customer" rows="5"><% if (item) { %><%= item.customer %><% } %></textarea>
 
 		<label>Worksite</label>
 		<textarea id="worksite" class="form-control" type="text" name="itemWorksite" placeholder="Worksite" rows="2"><% if (item) { %><%= item.worksite %><% } %></textarea>
+
+		<label>Summary of services:</label>
+
+<!-- 		<% var services = ['generalWelding', 'basementDoor', 'fireEscapes', 'awnings', 'railings', 'fences', 'stairs', 'gates', 'securityDoor', 'windowGuards', 'otherServices']
+			function camelize(str) {
+			  return str.replace(/(?:^\w|[A-Z]|\b\w)/g, function(word, index) {
+			    return index == 0 ? word.toLowerCase() : word.toUpperCase();
+			  }).replace(/\s+/g, '');
+		} %>
+		<% services.forEach(function(service){ %>
+			<div>
+				
+				<input id="<%= service %>Switch" name="item<%= service %>" type="checkbox" <% 
+				if (item) { if (item.service) { %><%= 'checked' %><% } } %>>
+				<label><%= service %></label>
+			</div>
+		<% }); %> -->
+
+
+		<div>
+			<label>General Welding</label>
+			<input id="generalWeldingSwitch" name="itemGeneralWelding" type="checkbox" <% if (item) { if (item.generalWelding ) { %><%= 'checked' %><% } } %>>
+		</div>
+
+		<div>
+			<label>General Repair</label>
+			<input id="generalRepairSwitch" name="itemGeneralRepair" type="checkbox" <% if (item) { if (item.generalRepair ) { %><%= 'checked' %><% } } %>>
+		</div>
+
+		<div>
+			<label>Basement Door</label>
+			<input id="basementDoorSwitch" name="itemBasementDoor" type="checkbox" <% if (item) { if (item.basementDoor ) { %><%= 'checked' %><% } } %>>
+		</div>
+
+		<div>
+			<label>Fire Escapes</label>
+			<input id="fireEscapesSwitch" name="itemFireEscapes" type="checkbox" <% if (item) { if (item.fireEscapes ) { %><%= 'checked' %><% } } %>>
+		</div>
+
+		<div>
+			<label>Awnings</label>
+			<input id="awningsSwitch" name="itemAwnings" type="checkbox" <% if (item) { if (item.awnings ) { %><%= 'checked' %><% } } %>>
+		</div>
+
+		<div>
+			<label>Railings</label>
+			<input id="railingsSwitch" name="itemRailings" type="checkbox" <% if (item) { if (item.railings ) { %><%= 'checked' %><% } } %>>
+		</div>
+
+		<div>
+			<label>Fences</label>
+			<input id="fencesSwitch" name="itemFences" type="checkbox" <% if (item) { if (item.fences ) { %><%= 'checked' %><% } } %>>
+		</div>
+		
+		<div>
+			<label>Stairs</label>
+			<input id="stairsSwitch" name="itemStairs" type="checkbox" <% if (item) { if (item.stairs ) { %><%= 'checked' %><% } } %>>
+		</div>
+
+		<div>
+			<label>Gates</label>
+			<input id="gatesSwitch" name="itemGates" type="checkbox" <% if (item) { if (item.gates ) { %><%= 'checked' %><% } } %>>
+		</div>
+
+		<div>
+			<label>Security Door</label>
+			<input id="securityDoorSwitch" name="itemSecurityDoor" type="checkbox" <% if (item) { if (item.securityDoor ) { %><%= 'checked' %><% } } %>>
+		</div>
+
+		<div>
+			<label>Window Guards</label>
+			<input id="windowGuardsSwitch" name="itemWindowGuards" type="checkbox" <% if (item) { if (item.swindowGuards ) { %><%= 'checked' %><% } } %>>
+		</div>
+
+		<div>
+			<label>Other Services</label>
+			<input id="otherServicesSwitch" name="itemOtherServices" type="checkbox" <% if (item) { if (item.otherServices ) { %><%= 'checked' %><% } } %>>
+		</div>
+
+		<label>Description</label>
+		<textarea id="description" class="form-control" type="text" name="itemDescription" placeholder="Description" rows="4"><% if (item) { %><%= item.description %><% } %></textarea>
+
+		<label>Note</label>
+		<textarea id="note" class="form-control" type="text" name="itemNote" rows="4"><% if (item) { %><%= item.note %><% } else { %><%= "Estimate time for project completion 3 to 4 weeks" %><% } %></textarea>
+
+		<label>Price</label>
+		<input id="price" class="form-control" type="text" name="itemPrice" placeholder="$0.00" value="<% if (item) { %><%= item.price %><% } %>">
+
+		<label>Tax Included</label>
+		<input id="taxSwitch" name="itemTax" type="checkbox" <% if (item) { if (item.tax) { %><%= "checked" %><% } } %>>
 
 		<div class="button-box">
 			<button class="btn btn-lg btn-primary btn-lg btn-block" type="submit" name="item">Save</button>
@@ -42,7 +135,6 @@
 	</form>
 </div>
 <script type="text/javascript">
-
 var docType = 'Estimate';
 var docs = document.getElementsByClassName('doc');
 for(var i = 0; i < docs.length; i++){
@@ -51,8 +143,41 @@ for(var i = 0; i < docs.length; i++){
     		docType = this.value;
     }
 }
-
 function generatePdf(){
+var taxPrice;
+var totalPrice;
+var halfPrice;
+if (document.getElementById("taxSwitch").checked) {
+	taxPrice = '-';
+	totalPrice = '$' + (parseFloat(document.getElementById("price").value)).toFixed(2);
+	halfPrice = '$' + (parseFloat(document.getElementById("price").value)/2).toFixed(2);
+} else {
+	taxPrice = '$' + (parseFloat(document.getElementById("price").value)*0.06625).toFixed(2);
+	totalPrice = '$' + ((parseFloat(document.getElementById("price").value)*0.06625)+parseFloat(document.getElementById("price").value)).toFixed(2);
+	halfPrice = '$' + (((parseFloat(document.getElementById("price").value)*0.06625)+parseFloat(document.getElementById("price").value))/2).toFixed(2);
+}
+
+
+
+
+
+if (document.getElementById("generalWeldingSwitch").checked) { var generalWelding = 'dot'; } else { var generalWelding = 'circle'; }
+if (document.getElementById("generalRepairSwitch").checked) { var generalRepair = 'dot'; } else { var generalRepair = 'circle'; }
+if (document.getElementById("basementDoorSwitch").checked) { var basementDoor = 'dot'; } else { var basementDoor = 'circle'; }
+
+if (document.getElementById("fireEscapesSwitch").checked) { var fireEscapes = 'dot'; } else { var fireEscapes = 'circle'; }
+if (document.getElementById("awningsSwitch").checked) { var awnings = 'dot'; } else { var awnings = 'circle'; }
+if (document.getElementById("railingsSwitch").checked) { var railings = 'dot'; } else { var railings = 'circle'; }
+
+if (document.getElementById("fencesSwitch").checked) { var fences = 'dot'; } else { var fences = 'circle'; }
+if (document.getElementById("stairsSwitch").checked) { var stairs = 'dot'; } else { var stairs = 'circle'; }
+if (document.getElementById("gatesSwitch").checked) { var gates = 'dot'; } else { var gates = 'circle'; }
+
+if (document.getElementById("securityDoorSwitch").checked) { var securityDoor = 'dot'; } else { var securityDoor = 'circle'; }
+if (document.getElementById("windowGuardsSwitch").checked) { var windowGuards = 'dot'; } else { var windowGuards = 'circle'; }
+if (document.getElementById("otherServicesSwitch").checked) { var otherServices = 'dot'; } else { var otherServices = 'circle'; }
+
+
 if (docType === "Estimate") {
 	var docDefinition = {
 	content: [{<%- include("logo") -%>, margin: [0, 50, 0, 0]}, {text: 'Estimate', bold: true, margin: [390, -60, 0, 0], alignment: 'center', fontSize: 24},
@@ -70,59 +195,51 @@ if (docType === "Estimate") {
 			'Email: jecchellc@yahoo.com',
 			'Web: www.jecche.com'
 			]}, {type: 'none',  style: 'tableBody', ul: [
-			'Jecche Steel • Glass • Aluminum LLC',
-			'829 Broadway Avenue',
-			'Newark, NJ 07104',
-			'Phone: (862) 234-1559 Cell: (973) 368-3248',
-			'Email: jecchellc@yahoo.com',
-			'Web: www.jecche.com'
+			document.getElementById("customer").value
 		]}]]}}]},
 	{fontSize: 10, alignment: 'left', margin: [0, 10, 0, 0], table: { widths: ['*', '*', '*', '*'], body: [
 		[{text: 'SUMMARY OF SERVICES', style: 'tableHeader', colSpan: 4}, {}, {}, {}],
 		[{ul: [
-				{text: 'General Welding', listType: 'circle'},
-				{text: 'General Repair', listType: 'circle'},
-				{text: 'Basement Door', listType: 'circle'}
+				{text: 'General Welding', listType: generalWelding},
+				{text: 'General Repair', listType: generalRepair},
+				{text: 'Basement Door', listType: basementDoor}
 			]}, {ul: [
-				{text: 'Fire Escapes', listType: 'circle'},
-				{text: 'Awnings', listType: 'circle'},
-				{text: 'Railings', listType: 'circle'}
+				{text: 'Fire Escapes', listType: fireEscapes},
+				{text: 'Awnings', listType: awnings},
+				{text: 'Railings', listType: railings}
 			]}, {ul: [
-				{text: 'Fences', listType: 'circle'},
-				{text: 'Stairs', listType: 'circle'},
-				{text: 'Gates', listType: 'circle'}
+				{text: 'Fences', listType: fences},
+				{text: 'Stairs', listType: stairs},
+				{text: 'Gates', listType: gates}
 			]}, {ul: [
-				{text: 'Security Door', listType: 'circle'},
-				{text: 'Window Guards', listType: 'circle'},
-				{text: 'Other Services', listType: 'circle'}
+				{text: 'Security Door', listType: securityDoor},
+				{text: 'Window Guards', listType: windowGuards},
+				{text: 'Other Services', listType: otherServices}
 	]}]]}},
 	{alignment: 'left', margin: [0, 10, 0, 0], table: { heights: ['', 220, 30, 30, 30], widths: [250, 120, '*'], body: [
 	[{text: 'DESCRIPTION', style: 'tableHeader'}, {text: 'WORKSITE', style: 'tableHeader'}, {text: 'TOTAL', style: 'tableHeader'}],
 	[{ type: 'none', ul: [
 					{text: 'Service of:', margin: [0, 0, 0, 10], },
-					{text: 'Design, manufacture and Installation Motorized Wrought Iron Sliding Gate.', style: 'tableBody'},
-					{text: 'Estimate time for project completion 3 to 4 weeks', fontSize: 8, margin: [0, 160, 0, 0], },
+					{text: document.getElementById("description").value, style: 'tableBody'},
+					{text: document.getElementById("note").value, fontSize: 8, margin: [0, 40, 0, 0], },
 				]},
-				{ type:'none', style:'tableBody', alignment:'center', margin:[-10, 6, 0, 0], ul: [
-			'536 N Walnut St',
-			'East Orange, NJ'
-		]}, { type: 'none', ul: [
-			{text: '$2800.00', style: 'price'},
+				{text: document.getElementById("worksite").value, alignment: 'center', fontSize: 10}, { type: 'none', ul: [
+			{text: '$' + document.getElementById("price").value, style: 'price'},
 		]}],
 		[{border: [false, false, false, false], text: ''},
 			{text: 'Subotal', style: 'price'},
 			{ type: 'none', ul: [
-			{text: '$2800.00', style: 'price'},
+			{text: '$' + document.getElementById("price").value, style: 'price'},
 		]}],
 	[{border: [false, false, false, false], fontSize: 10, text: 'Address for payments by check and other documents:'},
 			{text: 'Tax 6.625%', style: 'price'},
 			{ type: 'none', ul: [
-			{text: '$2800.00', style: 'price'},
+			{text: taxPrice, style: 'price'},
 		]}],
 	[{border: [false, false, false, false], fontSize: 10, bold: true, text: '14 Parkside Dr, Apt 2, Belleville NJ 07109'},
 	{text: 'Total', style: 'price'},
 	{type: 'none', ul: [
-	{text: '$2800.00', style: 'price'},
+	{text: totalPrice, style: 'price'},
 	]}]]}},
 	{margin: [0, 30, 0, 0], table: { widths: ['*'], body: [
 		[{text: 'NOTE',  style: 'tableHeader'}],
@@ -138,87 +255,72 @@ if (docType === "Estimate") {
 } else if (docType === 'Invoice') {
 
 	var docDefinition = {
-	content: [{<%- include("logo") -%>}, {text: 'Invoice', style: 'document'},
-	{ style: 'header', stack: [{ style: 'date', table: { body: [
-				[{text: 'Date', style: 'tableHeader'}, {text: 'Estimate #', style: 'tableHeader'}],
-				[document.getElementById("date").value, document.getElementById("number").value]
+	content: [{<%- include("logo") -%>, margin: [0, 50, 0, 0]}, {text: 'Invoice', bold: true, margin: [390, -60, 0, 0], alignment: 'center', fontSize: 24},
+	{ bold: true, alignment: 'right', margin: [395, 0, 0, -80], stack: [{alignment: 'center', table: { body: [
+		[{text: 'Date', style: 'tableHeader'}, {text: 'Invoice #', style: 'tableHeader'}],
+		[document.getElementById("date").value, document.getElementById("number").value]
 	]}}]},
-	{ style: 'customer', stack: [{ style: 'table2', table: { widths: ['*', '*'], body: [
+	{ alignment: 'center', margin: [0, 100, 0, 0], stack: [{ table: { widths: ['*', '*'], body: [
 		[{text: 'SERVICE PROVIDER', style: 'tableHeader'}, {text: 'CUSTOMER', style: 'tableHeader'}],
 		[ {type: 'none', style: 'tableBody', ul: [
-				'Jecche Steel • Glass • Aluminum LLC',
-				'829 Broadway Avenue',
-				'Newark, NJ 07104',
-				'Phone: (862) 234-1559 Cell: (973) 368-3248',
-				'Email: jecchellc@yahoo.com',
-				'Web: www.jecche.com'
-				]}, {type: 'none',  style: 'tableBody', ul: [
-				'Jecche Steel • Glass • Aluminum LLC',
-				'829 Broadway Avenue',
-				'Newark, NJ 07104',
-				'Phone: (862) 234-1559 Cell: (973) 368-3248',
-				'Email: jecchellc@yahoo.com',
-				'Web: www.jecche.com'
+			'Jecche Steel • Glass • Aluminum LLC',
+			'829 Broadway Avenue',
+			'Newark, NJ 07104',
+			'Phone: (862) 234-1559 Cell: (973) 368-3248',
+			'Email: jecchellc@yahoo.com',
+			'Web: www.jecche.com'
+			]}, {type: 'none',  style: 'tableBody', ul: [
+			document.getElementById("customer").value
 		]}]]}}]},
-	{style: 'tableServices', table: { widths: ['*', '*', '*', '*'], body: [
+	{fontSize: 10, alignment: 'left', margin: [0, 10, 0, 0], table: { widths: ['*', '*', '*', '*'], body: [
 		[{text: 'SUMMARY OF SERVICES', style: 'tableHeader', colSpan: 4}, {}, {}, {}],
 		[{ul: [
-				{text: 'General Welding', listType: 'circle'},
-				{text: 'General Repair', listType: 'circle'},
-				{text: 'Basement Door', listType: 'circle'}
+				{text: 'General Welding', listType: generalWelding},
+				{text: 'General Repair', listType: generalRepair},
+				{text: 'Basement Door', listType: basementDoor}
 			]}, {ul: [
-				{text: 'Fire Escapes', listType: 'circle'},
-				{text: 'Awnings', listType: 'circle'},
-				{text: 'Railings', listType: 'circle'}
+				{text: 'Fire Escapes', listType: fireEscapes},
+				{text: 'Awnings', listType: awnings},
+				{text: 'Railings', listType: railings}
 			]}, {ul: [
-				{text: 'Fences', listType: 'circle'},
-				{text: 'Stairs', listType: 'circle'},
-				{text: 'Gates', listType: 'circle'}
+				{text: 'Fences', listType: fences},
+				{text: 'Stairs', listType: stairs},
+				{text: 'Gates', listType: gates}
 			]}, {ul: [
-				{text: 'Security Door', listType: 'circle'},
-				{text: 'Window Guards', listType: 'circle'},
-				{text: 'Other Services', listType: 'circle'}
+				{text: 'Security Door', listType: securityDoor},
+				{text: 'Window Guards', listType: windowGuards},
+				{text: 'Other Services', listType: otherServices}
 	]}]]}},
-	{style: 'tableDescription', table: { heights: ['', 220, 30, 30, 30], widths: [250, 120, '*'], body: [
+	{alignment: 'left', margin: [0, 10, 0, 0], table: { heights: ['', 220, 30, 30, 30], widths: [250, 120, '*'], body: [
 	[{text: 'DESCRIPTION', style: 'tableHeader'}, {text: 'WORKSITE', style: 'tableHeader'}, {text: 'TOTAL', style: 'tableHeader'}],
 	[{ type: 'none', ul: [
 					{text: 'Service of:', margin: [0, 0, 0, 10], },
-					{text: 'Design, manufacture and Installation Motorized Wrought Iron Sliding Gate.', style: 'tableBody'}
+					{text: document.getElementById("description").value, style: 'tableBody'},
+					{text: document.getElementById("note").value, fontSize: 8, margin: [0, 40, 0, 0], },
 				]},
-				{ type: 'none', style: 'tableBody', alignment: 'center', margin: [-10, 6, 0, 0], ul: [
-			'536 N Walnut St',
-			'East Orange, NJ'
-		]}, { type: 'none', ul: [
-			{text: '$2800.00', style: 'total'},
+				{text: document.getElementById("worksite").value, alignment: 'center', fontSize: 10}, { type: 'none', ul: [
+			{text: '$' + document.getElementById("price").value, style: 'price'},
 		]}],
 		[{border: [false, false, false, false], text: ''},
-			{text: 'Subotal', style: 'total'},
+			{text: 'Subotal', style: 'price'},
 			{ type: 'none', ul: [
-			{text: '$2800.00', style: 'total'},
+			{text: '$' + document.getElementById("price").value, style: 'price'},
 		]}],
 	[{border: [false, false, false, false], fontSize: 10, text: 'Address for payments by check and other documents:'},
-			{text: 'Tax 6.625%', style: 'total'},
+			{text: 'Tax 6.625%', style: 'price'},
 			{ type: 'none', ul: [
-			{text: '$2800.00', style: 'total'},
+			{text: taxPrice, style: 'price'},
 		]}],
 	[{border: [false, false, false, false], fontSize: 10, bold: true, text: '14 Parkside Dr, Apt 2, Belleville NJ 07109'},
-	{text: 'Total', style: 'total'},
+	{text: 'Total', style: 'price'},
 	{type: 'none', ul: [
-	{text: '$2800.00', style: 'total'},
+	{text: totalPrice, style: 'price'},
 	]}]]}},
 	],
 	styles: {
-		logo: { margin: [0, 50, 0, 0] },
-		document: { bold: true, margin: [390, -60, 0, 0], alignment: 'center', fontSize: 24 },
-		header: { bold: true, alignment: 'right', margin: [395, 0, 0, -80] },
 		tableHeader: {fillColor: '#dddddd', alignment: 'center', fontSize: 10, bold: true },
 		tableBody: { fontSize: 10 },
-		customer: { alignment: 'center', margin: [0, 100, 0, 0] },
-		total: { bold: true, alignment: 'center', margin: [-10, 6, 0, 0] },
-		tableServices: { fontSize: 10, alignment: 'left', margin: [0, 10, 0, 0]},
-		tableDescription: { alignment: 'left', margin: [0, 10, 0, 0] },
-		tableNote: { alignment: 'left', margin: [0, 30, 0, 0] },
-		note: { fontSize: 7, alignment: 'center' },
+		price: { bold: true, alignment: 'center', margin: [-10, 6, 0, 0] },
 	}
 };
 
@@ -239,54 +341,44 @@ if (docType === "Estimate") {
 				'Phone: (862) 234-1559 Cell: (973) 368-3248',
 				'Email: jecchellc@yahoo.com',
 				'Web: www.jecche.com'
-			]}, {type: 'none',  style: 'tableBody', ul: [
-				'Jecche Steel • Glass • Aluminum LLC',
-				'829 Broadway Avenue',
-				'Newark, NJ 07104',
-				'Phone: (862) 234-1559 Cell: (973) 368-3248',
-				'Email: jecchellc@yahoo.com',
-				'Web: www.jecche.com'
-		]}]]}}]},
+			]}, {text: document.getElementById("customer").value, style: 'tableBody'}
+			]]}}]},
 	{style: 'tableServices', table: { widths: ['*', '*', '*', '*'], body: [
 		[{text: 'SUMMARY OF SERVICES', style: 'tableHeader', colSpan: 4}, {}, {}, {}],
 		[{ul: [
-				{text: 'General Welding', listType: 'circle'},
-				{text: 'General Repair', listType: 'circle'},
-				{text: 'Basement Door', listType: 'circle'}
+				{text: 'General Welding', listType: generalWelding},
+				{text: 'General Repair', listType: generalRepair},
+				{text: 'Basement Door', listType: basementDoor}
 			]}, {ul: [
-				{text: 'Fire Escapes', listType: 'circle'},
-				{text: 'Awnings', listType: 'circle'},
-				{text: 'Railings', listType: 'circle'}
+				{text: 'Fire Escapes', listType: fireEscapes},
+				{text: 'Awnings', listType: awnings},
+				{text: 'Railings', listType: railings}
 			]}, {ul: [
-				{text: 'Fences', listType: 'circle'},
-				{text: 'Stairs', listType: 'circle'},
-				{text: 'Gates', listType: 'circle'}
+				{text: 'Fences', listType: fences},
+				{text: 'Stairs', listType: stairs},
+				{text: 'Gates', listType: gates}
 			]}, {ul: [
-				{text: 'Security Door', listType: 'circle'},
-				{text: 'Window Guards', listType: 'circle'},
-				{text: 'Other Services', listType: 'circle'}
+				{text: 'Security Door', listType: securityDoor},
+				{text: 'Window Guards', listType: windowGuards},
+				{text: 'Other Services', listType: otherServices}
 	]}]]}},
 	{text: 'SERVICE AGREEMENT', style: 'header' },
-	{text: '1. DESCRIPTION OF SERVICES. Beginning on upon agreement to this contract Jecche Steel Glass & Aluminum LLC will provide to Mr. Johnny Hernandez the following services:', style: 'paragraph' },
-	{ stack: [{ table: { heights: [0, 160], body: [
+	{text: '1. DESCRIPTION OF SERVICES. Beginning on upon agreement to this contract Jecche Steel Glass & Aluminum LLC will provide to ' + document.getElementById("attn").value + ' the following services:', style: 'paragraph' },
+	{ stack: [{ table: { heights: [0, 150], body: [
 		[{text: 'Service of:', fontSize: 10, border: [false, false, false, false]}],
-		[{border: [false, false, false, false], ul: [
-			{text: 'If a party defaults by failing to substantially perform any provision, term or condition of this Contract (including without limitation the failure to make a monetary payment when due), the other party may terminate the Contract by providing written notice to the defaulting party. This notice shall describe with sufficient detail the nature of the default. The party receiving such notice shall have 30 days from the effective date of such notice to cure the default(s). Unless waived by a party providing notice, the failure to cure the default(s) within such time period shall result in the automatic termination of this Contract.', listType: 'dot', margin: [0, 0, 0, 5]},
-			{text: 'General Repair', listType: 'dot', margin: [0, 0, 0, 5]},
-			{text: 'Basement Door', listType: 'dot', margin: [0, 0, 0, 5]}
-		]}]
+		[{text: document.getElementById("description").value, style: 'tableBody', margin: [0, 0, 0, 5], border: [false, false, false, false]}]
 	]}}]},
 	{type: 'none',  style: 'tableBody', ul: [
-		{text: 'Worksite: 536 N Walnut St, East Orange, NJ', fontSize: 8, margin: [0, 10, 0, 0] },
-		{text: 'Note: Estimate time for project completion 3 to 4 weeks', fontSize: 8, margin: [0, 10, 0, 0], },
+		{text: 'Worksite: ' + document.getElementById("worksite").value, fontSize: 8, margin: [0, 10, 0, 0] },
+		{text: document.getElementById("note").value, fontSize: 8, margin: [0, 10, 0, 0], },
 	]},
-	{text: '2. PAYMENT FOR SERVICES. In exchange for the services Mr. Johnny Hernandez will pay Jecche Steel, Glass & Aluminum LLC according to the following schedule:', style: 'paragraph' },
+	{text: '2. PAYMENT FOR SERVICES. In exchange for the services ' + document.getElementById("attn").value + ' will pay Jecche Steel, Glass & Aluminum LLC according to the following schedule:', style: 'paragraph' },
 	{stack: [{ table: { widths: [400, '*'], body: [
-		[{text: 'Subtotal', fontSize: 10}, {text: '$2800.00', fontSize: 10, alignment: 'center'}],
-		[{text: 'Tax 6.625%', fontSize: 10}, {text: '$2800.00', fontSize: 10, alignment: 'center'}],
-		[{text: 'Total', fontSize: 10}, {text: '$2800.00', fontSize: 10, alignment: 'center'}],
-		[{text: '1st Payment (Non Refundable Down Payment due at signing of the contract)', fontSize: 10}, {text: '$2800.00', fontSize: 10, alignment: 'center'}],
-		[{text: '2nd Payment (Remainder of amount upon completion)', fontSize: 10}, {text: '$2800.00', fontSize: 10, alignment: 'center'}]
+		[{text: 'Subtotal', fontSize: 10}, {text: '$' + document.getElementById("price").value, fontSize: 10, alignment: 'center'}],
+		[{text: 'Tax 6.625%', fontSize: 10}, {text: taxPrice, fontSize: 10, alignment: 'center'}],
+		[{text: 'Total', fontSize: 10}, {text: totalPrice, fontSize: 10, alignment: 'center'}],
+		[{text: '1st Payment (Non Refundable Down Payment due at signing of the contract)', fontSize: 10}, {text: halfPrice, fontSize: 10, alignment: 'center'}],
+		[{text: '2nd Payment (Remainder of amount upon completion)', fontSize: 10}, {text: halfPrice, fontSize: 10, alignment: 'center'}]
 	]}}]},
 
 	{text: '3. TERM. This Contract takes effect immediately as of the Signed Date, and will terminate automatically upon completion by Jecche Steel, Glass & Aluminum LLC of the Services required by this Contract.', style: 'paragraph' },
