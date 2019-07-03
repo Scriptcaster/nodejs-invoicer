@@ -134,15 +134,19 @@ app.post("/delete", function(req, res) {
   });
 });
 
-app.listen(process.env.PORT || 3000, function(){
-  console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
-});
-
-// let port = process.env.PORT;
-// if (port == null || port == "") {
-//   port = 3000;
-// }
-
-// app.listen(port, function() {
-//   console.log("Server started on port 3000");
+// server.connection({
+//   port: process.env.PORT || 5000
 // });
+
+// app.listen(process.env.PORT || 3000, function(){
+//   console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
+// });
+
+let port = process.env.PORT;
+if (port == null || port == "") {
+  port = 5000;
+}
+
+app.listen(port, function() {
+  console.log("Server started on port 3000");
+});
