@@ -144,9 +144,11 @@ for(var i = 0; i < docs.length; i++){
     }
 }
 function generatePdf(){
+var subTotalPrice = '$' + (parseFloat(document.getElementById("price").value)).toFixed(2);
 var taxPrice;
 var totalPrice;
 var halfPrice;
+
 if (document.getElementById("taxSwitch").checked) {
 	taxPrice = '-';
 	totalPrice = '$' + (parseFloat(document.getElementById("price").value)).toFixed(2);
@@ -224,12 +226,12 @@ if (docType === "Estimate") {
 					{text: document.getElementById("note").value, fontSize: 8, margin: [0, 40, 0, 0], },
 				]},
 				{text: document.getElementById("worksite").value, alignment: 'center', fontSize: 10}, { type: 'none', ul: [
-			{text: '$' + document.getElementById("price").value, style: 'price'},
+			{text: subTotalPrice, style: 'price'},
 		]}],
 		[{border: [false, false, false, false], text: ''},
 			{text: 'Subotal', style: 'price'},
-			{ type: 'none', ul: [
-			{text: '$' + document.getElementById("price").value, style: 'price'},
+			{type: 'none', ul: [
+			{text: subTotalPrice, style: 'price'},
 		]}],
 	[{border: [false, false, false, false], fontSize: 10, text: 'Address for payments by check and other documents:'},
 			{text: 'Tax 6.625%', style: 'price'},
@@ -299,12 +301,12 @@ if (docType === "Estimate") {
 					{text: document.getElementById("note").value, fontSize: 8, margin: [0, 40, 0, 0], },
 				]},
 				{text: document.getElementById("worksite").value, alignment: 'center', fontSize: 10}, { type: 'none', ul: [
-			{text: '$' + document.getElementById("price").value, style: 'price'},
+			{text: subTotalPrice, style: 'price'},
 		]}],
 		[{border: [false, false, false, false], text: ''},
 			{text: 'Subotal', style: 'price'},
 			{ type: 'none', ul: [
-			{text: '$' + document.getElementById("price").value, style: 'price'},
+			{text: subTotalPrice, style: 'price'},
 		]}],
 	[{border: [false, false, false, false], fontSize: 10, text: 'Address for payments by check and other documents:'},
 			{text: 'Tax 6.625%', style: 'price'},
@@ -374,7 +376,7 @@ if (docType === "Estimate") {
 	]},
 	{text: '2. PAYMENT FOR SERVICES. In exchange for the services ' + document.getElementById("attn").value + ' will pay Jecche Steel, Glass & Aluminum LLC according to the following schedule:', style: 'paragraph' },
 	{stack: [{ table: { widths: [400, '*'], body: [
-		[{text: 'Subtotal', fontSize: 10}, {text: '$' + document.getElementById("price").value, fontSize: 10, alignment: 'center'}],
+		[{text: 'Subtotal', fontSize: 10}, {text: subTotalPrice, fontSize: 10, alignment: 'center'}],
 		[{text: 'Tax 6.625%', fontSize: 10}, {text: taxPrice, fontSize: 10, alignment: 'center'}],
 		[{text: 'Total', fontSize: 10}, {text: totalPrice, fontSize: 10, alignment: 'center'}],
 		[{text: '1st Payment (Non Refundable Down Payment due at signing of the contract)', fontSize: 10}, {text: halfPrice, fontSize: 10, alignment: 'center'}],
