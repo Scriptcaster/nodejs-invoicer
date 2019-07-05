@@ -14,32 +14,31 @@
 		<label>Date</label>
 		<input id="date" class="form-control" type="text" value="<% if (item) { %><%= item.date %><% } else { %><%= new Date().getMonth()+1+'/'+new Date().getDate()+'/'+ new Date().getFullYear() %><% }%>" name="itemDate" placeholder="Date">
 
-		<label>Cotract Name</label>
-		<input id="attn" class="form-control" type="text" name="itemAttn" placeholder="Client Name" value="<% if (item) { %><%= item.attn %><% } %>">
-		
 		<label>Customer</label>
-		<textarea id="customer" class="form-control" type="text" name="itemCustomer" placeholder="Customer" rows="5"><% if (item) { %><%= item.customer %><% } %></textarea>
+		<div>
+			<select id="customerSelect" name="customerSelect" onchange="this.form.submit();">
+				<option value="">Choose a customer</option>
+				<% dbCustomers.forEach(function(dbCustomers){ %>
+				<% if (item) { %>
+					<% if (dbCustomers.attn == item.customerSelect) { %>
+						<option value="<%=  dbCustomers.attn  %>" selected><%=  dbCustomers.attn  %></p>
+					<% } else { %>
+						<option value="<%=  dbCustomers.attn  %>"><%=  dbCustomers.attn  %></option>
+					<% } %>
+				<% } else { %>
+					<option value="<%=  dbCustomers.attn  %>"><%=  dbCustomers.attn  %></option>
+				<% } %>
+				<% }); %>
+			</select>
+		</div>
+
+		<label>Customer</label>
+		<textarea id="customer" class="form-control" type="text" name="itemCustomer" placeholder="Customer" rows="5"><% dbCustomers.forEach(function(dbCustomers){ %><% if (item) { %><% if (dbCustomers.attn === item.customerSelect) { %><%=  dbCustomers.info %><% } %><% } %><% }); %></textarea>
 
 		<label>Worksite</label>
 		<textarea id="worksite" class="form-control" type="text" name="itemWorksite" placeholder="Worksite" rows="2"><% if (item) { %><%= item.worksite %><% } %></textarea>
 
 		<label>Summary of services:</label>
-
-<!-- 		<% var services = ['generalWelding', 'basementDoor', 'fireEscapes', 'awnings', 'railings', 'fences', 'stairs', 'gates', 'securityDoor', 'windowGuards', 'otherServices']
-			function camelize(str) {
-			  return str.replace(/(?:^\w|[A-Z]|\b\w)/g, function(word, index) {
-			    return index == 0 ? word.toLowerCase() : word.toUpperCase();
-			  }).replace(/\s+/g, '');
-		} %>
-		<% services.forEach(function(service){ %>
-			<div>
-				
-				<input id="<%= service %>Switch" name="item<%= service %>" type="checkbox" <% 
-				if (item) { if (item.service) { %><%= 'checked' %><% } } %>>
-				<label><%= service %></label>
-			</div>
-		<% }); %> -->
-
 
 		<div>
 			<label>General Welding</label>
@@ -116,6 +115,7 @@
 		<div class="button-box">
 			<button class="btn btn-lg btn-primary btn-lg btn-block" type="submit" name="item">Save</button>
 			<a class="btn btn-success btn-lg btn-block" onClick = "generatePdf();">Generate PDF</a>
+			<a href="/" class="btn btn-lg btn-primary btn-lg btn-block">Back</a>
 		</div>
 	</form>
 	<div class="form-group text-center">
@@ -128,13 +128,20 @@
 	    <input type="radio" name="inputWalls" class="doc" value="Contract">  Contract</label>
 	  </div>
 	</div>
-	<form action="/delete" method="post" class=text-center>
+	<form action="/delete" method="post" class="text-center">
 		<div class="button-box">
 			<button class="btn btn-link" type="submit" name="id" value="<% if (item) { %><%= item._id%><% } %>">Remove</button>
 		</div>
 	</form>
+
+	<button type="button" onclick="callIt();">Call It</button>
 </div>
+
 <script type="text/javascript">
+// function updateCustomer() {
+// 	document.getElementById("customer").innerHTML = document.getElementById("hidden").text;  
+// }
+	
 var docType = 'Estimate';
 var docs = document.getElementsByClassName('doc');
 for(var i = 0; i < docs.length; i++){
@@ -144,6 +151,9 @@ for(var i = 0; i < docs.length; i++){
     }
 }
 function generatePdf(){
+var customerSelect = document.getElementById("customerSelect");
+var customerSelectValue = customerSelect.options[customerSelect.selectedIndex].value;
+
 var subTotalPrice = '$' + (parseFloat(document.getElementById("price").value)).toFixed(2);
 var taxPrice;
 var totalPrice;
@@ -365,7 +375,7 @@ if (docType === "Estimate") {
 				{text: 'Other Services', listType: otherServices}
 	]}]]}},
 	{text: 'SERVICE AGREEMENT', style: 'header' },
-	{text: '1. DESCRIPTION OF SERVICES. Beginning on upon agreement to this contract Jecche Steel Glass & Aluminum LLC will provide to ' + document.getElementById("attn").value + ' the following services:', style: 'paragraph' },
+	{text: '1. DESCRIPTION OF SERVICES. Beginning on upon agreement to this contract Jecche Steel Glass & Aluminum LLC will provide to ' + customerSelectValue + ' the following services:', style: 'paragraph' },
 	{ stack: [{ table: { heights: [0, 150], body: [
 		[{text: 'Service of:', fontSize: 10, border: [false, false, false, false]}],
 		[{text: document.getElementById("description").value, style: 'tableBody', margin: [0, 0, 0, 5], border: [false, false, false, false]}]
@@ -374,16 +384,16 @@ if (docType === "Estimate") {
 		{text: 'Worksite: ' + document.getElementById("worksite").value, fontSize: 8, margin: [0, 10, 0, 0] },
 		{text: document.getElementById("note").value, fontSize: 8, margin: [0, 10, 0, 0], },
 	]},
-	{text: '2. PAYMENT FOR SERVICES. In exchange for the services ' + document.getElementById("attn").value + ' will pay Jecche Steel, Glass & Aluminum LLC according to the following schedule:', style: 'paragraph' },
-	{stack: [{ table: { widths: [400, '*'], body: [
+	{text: '2. PAYMENT FOR SERVICES. In exchange for the services ' + customerSelectValue + ' will pay Jecche Steel, Glass & Aluminum LLC according to the following schedule:', style: 'paragraph' },
+	{stack: [{ table: { widths: [400, '*'],  body: [
 		[{text: 'Subtotal', fontSize: 10}, {text: subTotalPrice, fontSize: 10, alignment: 'center'}],
 		[{text: 'Tax 6.625%', fontSize: 10}, {text: taxPrice, fontSize: 10, alignment: 'center'}],
 		[{text: 'Total', fontSize: 10}, {text: totalPrice, fontSize: 10, alignment: 'center'}],
 		[{text: '1st Payment (Non Refundable Down Payment due at signing of the contract)', fontSize: 10}, {text: halfPrice, fontSize: 10, alignment: 'center'}],
 		[{text: '2nd Payment (Remainder of amount upon completion)', fontSize: 10}, {text: halfPrice, fontSize: 10, alignment: 'center'}]
 	]}}]},
-
-	{text: '3. TERM. This Contract takes effect immediately as of the Signed Date, and will terminate automatically upon completion by Jecche Steel, Glass & Aluminum LLC of the Services required by this Contract.', style: 'paragraph' },
+	{text: '                              ', margin: [0, 40, 0, 0]},
+	{text: '3. TERM. This Contract takes effect immediately as of the Signed Date, and will terminate automatically upon completion by Jecche Steel, Glass & Aluminum LLC of the Services required by this Contract.', margin: [0, 10, 0, 0] },
 	{text: '4. WORK PRODUCT OWNERSHIP. Any copyrightable works, ideas, inventions, products, or other information developed in whole or in part by Jecche Steel, Glass & Aluminum LLC in connection with the Services will be the exclusive property of Jecche Steel, Glass & Aluminum LLC. ', style: 'paragraph' },
 	{text: '5. REMEDIES. If a party defaults by failing to substantially perform any provision, term or condition of this Contract (including without limitation the failure to make a monetary payment when due), the other party may terminate the Contract by providing written notice to the defaulting party. This notice shall describe with sufficient detail the nature of the default. The party receiving such notice shall have 30 days from the effective date of such notice to cure the default(s). Unless waived by a party providing notice, the failure to cure the default(s) within such time period shall result in the automatic termination of this Contract.', style: 'paragraph' },
 	{text: '6. ENTIRE AGREEMENT. This Contract contains the entire agreement of the parties, and there are no other promises or conditions in any other agreement whether oral or written concerning the subject matter of this Contract. This Contract supersedes any prior written or oral agreements between the parties.', style: 'paragraph' },

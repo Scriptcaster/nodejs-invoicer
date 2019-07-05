@@ -1,0 +1,33 @@
+<%- include("header") -%>
+<div class="box">
+	<form action="/customer" class="form-signin" action="/" method="post">
+		<div class="text-center">
+			<a href="/"><img class="mb-4" src="/img/logo.png" alt=""></a>
+			<div class="box" id="heading">
+				<h1 class="h3 mb-3 font-weight-normal">Customer</h1>
+			</div>
+		</div>
+		
+		
+
+		<label>Attn</label>
+		<input id="attn" class="form-control" type="text" name="customerAttn" value="<% if (customer) { %><%= customer.attn %><% } %>">
+
+		<label>Info</label>
+		<textarea id="info" class="form-control" type="text" name="customerInfo" rows="5"><% if (customer) { %><%= customer.info %><% } %></textarea>
+
+		<div class="button-box">
+			<button class="btn btn-lg btn-primary btn-lg btn-block" type="submit" name="customer">Save</button>
+		</div>
+	</form>
+	
+	<form action="/deleteCustomer" method="post" class=text-center>
+		<div class="button-box">
+			<button class="btn btn-link" type="submit" name="id" value="<% if (customer) { %><%= customer._id%><% } %>">Remove</button>
+		</div>
+	</form>
+</div>
+<script type="text/javascript">
+
+</script>
+<%- include("footer") -%>

@@ -17,7 +17,20 @@
       <% }); %>
       <div class="button-box">
         <a class="btn btn-lg btn-primary btn-block" href="/item">New Item</a>
+      </div>
     </div>
+
+     <div class="form-signin">
+      <% dbCustomers.forEach(function(dbCustomers){ %>
+      <ul class="list-group">
+        <a href="/customers/<%=  dbCustomers.attn  %>">
+          <li class="list-group-  x"><%=  dbCustomers.attn  %></li>
+        </a>
+      </ul>
+      <% }); %>
+      <div class="button-box">
+        <a class="btn btn-lg btn-primary btn-block" href="/customers/customer">New Customer</a>
+      </div>
     </div>
 </div>
 <%- include("footer") -%>

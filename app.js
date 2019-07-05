@@ -7,11 +7,12 @@ const app = express();
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
+
 mongoose.connect("mongodb+srv://admin-ravos:Mgi86Shift@cluster0-g2cja.mongodb.net/dynamo", {useNewUrlParser: true});
 const itemSchema = { 
   number: String, 
   date: String,
-  attn: String,  
+  customerSelect: String,  
   customer: String, 
   worksite: String, 
 
@@ -37,32 +38,72 @@ const itemSchema = {
   tax: String 
 };
 const Item = mongoose.model("Item", itemSchema);
+const customerSchema = { 
+  attn: String,
+  info: String,
+};
+const Customer = mongoose.model("Customer", customerSchema);
 
 app.get("/", function(req, res) {
   Item.find({}, function(err, dbItems){ 
-    res.render("home", {dbItems: dbItems});
+    Customer.find({}, function(err, dbCustomers){ 
+       res.render("home", {dbItems: dbItems, dbCustomers: dbCustomers});
+    });
   });
+  
 });
 
-app.get("/:itemNumber", function(req, res) {
-  const selectedNumber = req.params.itemNumber;
+app.get("/:link", function(req, res) {
+  const link = req.params.link;
   var lastNumber = Number;
   var doc = String;
   Item.find(function(err, lastItem){ lastNumber = lastItem; }).limit(1).sort({$natural:-1});
-  Item.findOne({number: selectedNumber}, function(err, foundItem){
-    console.log(foundItem);
-    if (foundItem){ doc = selectedNumber; } else { doc = "New Document"; }
-    res.render("item", {item: foundItem, Document: doc, Numberr: lastNumber});
+  Item.findOne({number: link}, function(err, foundItem){
+    if (foundItem){ doc = link; } else { doc = "New Document"; }
+      Customer.find({}, function(err, dbCustomers){ 
+      res.render("item", {item: foundItem, Document: doc, Numberr: lastNumber, dbCustomers: dbCustomers});
+      });
+  });
+});
+
+app.get("/customers/:link", function(req, res) {
+  const link = req.params.link;
+  var lastNumber = Number;
+  var doc = String;
+  Customer.findOne({attn: link}, function(err, foundCustomer){
+    if (foundCustomer){ cus = link; } else { cus = "New Customer"; }
+      res.render("customer", {customer: foundCustomer, Customer: cus});
+  });
+});
+
+app.post("/customer", function(req, res){
+  const selectedAttn = req.body.customerAttn;
+  const customer = new Customer({
+    attn: req.body.customerAttn,
+    info: req.body.customerInfo, 
+  });
+  Customer.findOne({attn: selectedAttn}, function(err, foundCustomer){
+    if (foundCustomer) {
+      Customer.findOneAndUpdate({attn: selectedAttn }, { 
+      attn: req.body.customerAttn,
+      info: req.body.customerInfo,   
+      }, function(err, foundCustomer){
+        res.redirect("/");
+      });
+    } else {
+      customer.save();
+      res.redirect("/");
+    }
   });
 });
 
 app.post("/", function(req, res){
-  console.log( req.body.itemTax  );
+  console.log( req.body );
   const selectedNumber = req.body.itemNumber;
   const item = new Item({
     number: req.body.itemNumber,
     date: req.body.itemDate,
-    attn: req.body.itemAttn,
+    customerSelect: req.body.customerSelect,
     customer: req.body.itemCustomer,
     worksite: req.body.itemWorksite,
 
@@ -87,13 +128,13 @@ app.post("/", function(req, res){
     price: req.body.itemPrice,
     tax: req.body.itemTax
   });
-  
+
   Item.findOne({number: selectedNumber}, function(err, foundItem){
-     if (foundItem) {
-       Item.findOneAndUpdate({number: selectedNumber }, { 
+    if (foundItem) {
+      Item.findOneAndUpdate({number: selectedNumber }, { 
         number: req.body.itemNumber,
         date: req.body.itemDate,
-        attn: req.body.itemAttn,
+        customerSelect: req.body.customerSelect,
         customer: req.body.itemCustomer,
         worksite: req.body.itemWorksite,
 
@@ -117,20 +158,39 @@ app.post("/", function(req, res){
         note: req.body.itemNote,
         price: req.body.itemPrice,
         tax: req.body.itemTax    
-       }, function(err, foundItem){
-         res.redirect("/");
-       });
-     } else {
-        item.save();
-        res.redirect("/");
-     }
+     }, function(err, foundItem){
+       res.redirect("/"+ req.body.itemNumber);
+     });
+    } else {
+      item.save();
+      res.redirect("/"+ req.body.itemNumber);
+    }
   });
+
 });
+
+
+
+
+
+app.post("/update", function(req, res){
+  console.log(req.params);
+   res.redirect("/");
+});
+
+
 
 app.post("/delete", function(req, res) {
   const checkedItemId = req.body.id;
   Item.findByIdAndRemove(checkedItemId, function(err){
-    if (err) { console.log(err); } else { console.log("removed"); res.redirect("/"); }
+    if (err) { console.log(err); } else { res.redirect("/"); }
+  });
+});
+
+app.post("/deleteCustomer", function(req, res) {
+  const checkedItemId = req.body.id;
+  Customer.findByIdAndRemove(checkedItemId, function(err){
+    if (err) { console.log(err); } else { res.redirect("/"); }
   });
 });
 
