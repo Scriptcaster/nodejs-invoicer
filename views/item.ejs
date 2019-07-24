@@ -193,7 +193,7 @@ if (document.getElementById("otherServicesSwitch").checked) { var otherServices 
 if (docType === "Estimate") {
 	var docDefinition = {
 	content: [{<%- include("logo") -%>, margin: [0, 50, 0, 0]}, {text: 'Estimate', bold: true, margin: [390, -60, 0, 0], alignment: 'center', fontSize: 24},
-	{ bold: true, alignment: 'right', margin: [395, 0, 0, -80], stack: [{alignment: 'center', table: { body: [
+	{ bold: true, alignment: 'right', margin: [390, 0, 0, -80], stack: [{alignment: 'center', table: { body: [
 		[{text: 'Date', style: 'tableHeader'}, {text: 'Estimate #', style: 'tableHeader'}],
 		[document.getElementById("date").value, document.getElementById("number").value]
 	]}}]},
