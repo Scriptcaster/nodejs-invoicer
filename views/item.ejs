@@ -134,7 +134,7 @@
 		</div>
 	</form>
 
-	<button type="button" onclick="callIt();">Call It</button>
+<!-- 	<button type="button" onclick="callIt();">Call It</button> -->
 </div>
 
 <script type="text/javascript">
@@ -268,7 +268,7 @@ if (docType === "Estimate") {
 
 	var docDefinition = {
 	content: [{<%- include("logo") -%>, margin: [0, 50, 0, 0]}, {text: 'Invoice', bold: true, margin: [390, -60, 0, 0], alignment: 'center', fontSize: 24},
-	{ bold: true, alignment: 'right', margin: [395, 0, 0, -80], stack: [{alignment: 'center', table: { body: [
+	{ bold: true, alignment: 'right', margin: [390, 0, 0, -80], stack: [{alignment: 'center', table: { body: [
 		[{text: 'Date', style: 'tableHeader'}, {text: 'Invoice #', style: 'tableHeader'}],
 		[document.getElementById("date").value, document.getElementById("number").value]
 	]}}]},
@@ -376,7 +376,7 @@ if (docType === "Estimate") {
 	]}]]}},
 	{text: 'SERVICE AGREEMENT', style: 'header' },
 	{text: '1. DESCRIPTION OF SERVICES. Beginning on upon agreement to this contract Jecche Steel Glass & Aluminum LLC will provide to ' + customerSelectValue + ' the following services:', style: 'paragraph' },
-	{ stack: [{ table: { heights: [0, 150], body: [
+	{ stack: [{ table: { heights: [0, 100], body: [
 		[{text: 'Service of:', fontSize: 10, border: [false, false, false, false]}],
 		[{text: document.getElementById("description").value, style: 'tableBody', margin: [0, 0, 0, 5], border: [false, false, false, false]}]
 	]}}]},
@@ -416,7 +416,7 @@ if (docType === "Estimate") {
 		paragraph: {fontSize: 10, margin: [0, 10, 0, 10]},
 		logo: { margin: [0, 50, 0, 0] },
 		document: { bold: true, margin: [390, -60, 0, 0], alignment: 'center', fontSize: 24 },
-		tableNumber: { bold: true, alignment: 'right', margin: [395, 0, 0, -80] },
+		tableNumber: { bold: true, alignment: 'right', margin: [390, 0, 0, -80] },
 		tableHeader: {fillColor: '#dddddd', alignment: 'center', fontSize: 10, bold: true },
 		tableBody: { fontSize: 10 },
 		customer: { alignment: 'center', margin: [0, 100, 0, 0] },
